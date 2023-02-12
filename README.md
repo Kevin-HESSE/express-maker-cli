@@ -1,6 +1,22 @@
 # Express maker CLI
 
-Merci de participer aux test du package `Express maker CLI`. Pour vous aider, suivez les instructions du README pour installer ce dernier. Si vous rencontrez un soucis, merci de me fournir un screenshot et le processus pour refaire le bug via les issues de ce répo GitHub.
+Merci de participer aux test du package `express maker CLI`. Pour vous aider, suivez les instructions du README pour installer ce dernier. 
+
+Pour le test, aucune dépendance sera nécessaire.
+
+La partie opérationnelle d'`express maker CLI`  s'inspire de :
+
+- `sequelize CLI`
+- `symfony/maker-bundle`, un package qui permet la création de controller et d'entité sur le framework Symfony
+
+Le processus de création de modèle a été poussé plus loin avec une serie de question, qui permette une génération dynamique selon les besoins de l'utilisateur.
+
+## FeedBack
+
+Merci d'utiliser les issues du repos github dans les cas suivant :
+
+- Si vous rencontrez un soucis, merci de me fournir un screenshot et la démarche pour reproduire le bug.
+- Si vous voulez proposer une amélioration concernant les fonctionnalités déjà présentes
 
 ## Installation du package
 
@@ -41,12 +57,23 @@ express-maker -h
 Pour lancer la procédure de génération de model :
 
 ```bash
-# Replace nameModel by something else
-express-maker model nameModel
+express-maker model <nameModel>
 ```
 
-`nameModel` sera le nom donnée de votre fichier et de votre classe à la fin du processus.
+`<nameModel>` sera le nom donnée de votre fichier et de votre classe à la fin du processus.
 
 Une série de question vont vous être posé qui permettront la création du modèle.
 
 Actuellement le répertoire où ces derniers sont créées est le `./app/models`
+
+## Améliorations prévus
+
+### Court terme
+
+- Permettre de changer le répertoire par défaut où sont créées les modèles.
+- Génération automatique du fichier pour se connecter à `sequelize`.
+
+### Moyen / long terme
+
+- Génération des routers / controllers
+- Génération d'un fichier index basique pour démarrer un projet sur express.
