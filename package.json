@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-maker-cli",
+  "name": "express-maker-cli",
   "version": "1.0.0",
   "main": "app.js",
   "directories": {
@@ -8,6 +8,7 @@
   "dependencies": {
     "commander": "^10.0.0",
     "js-beautify": "^1.14.7",
+    "kleur": "^3.0.3",
     "lodash": "^4.17.21",
     "prompts": "^2.4.2"
   },
@@ -22,4 +23,3 @@
   },
   "description": ""
 }
-

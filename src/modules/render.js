@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require ('lodash');
 const beautify = require('js-beautify');
+const pathGenerate = require('../helpers/pathGenerate');
 
 function generateFile(model){
     /** On récupère le fichier modelTemplate.js */
@@ -22,9 +23,14 @@ function generateFile(model){
     }
 
     content = beautify(content, option);
-
-    /** On ecrit dans un fichier modelTemplate.js le contenu généré au préalable. */
-    fs.writeFileSync('./modelTemplate.js', content);
+    
+    const fileToRender = pathGenerate.models + '/' + model.modelName + '.js';
+    
+    try {
+        fs.writeFileSync(fileToRender, content);
+    } catch (error) {
+        console.log(`Have you create the followed directory ? [ ${pathGenerate.models} ]`);
+    }
 }
 
 module.exports = generateFile;

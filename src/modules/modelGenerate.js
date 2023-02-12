@@ -1,30 +1,38 @@
 const Question = require('../models/Question');
 const prompts = require('prompts');
+const kleur = require('kleur');
 const types = require('../enum/typesEnum');
+const onCancel = require('../actions/exitAction');
 
 const model = {
-
-    askModelName : new Question('text', 'modelName', 'Define the model to create :'),
     askAttributes : [
         new Question('text', 'attribute', 'The name of the attribute :'),
-        new Question('autocomplete', 'type', 'The type of the attribute :', types ),
+        new Question('select', 'type', 'The type of the attribute :', types ),
         new Question('toggle', 'allowNull', 'Can be null ?', true),
-        new Question('toggle', 'continue', 'Would you like to add an other attribute ?', false)
+        new Question('toggle', 'continue', 'Would you like to add an other attribute ?', false),
+    ],
+    askForeignKeys: [
+        new Question('text', 'attribute', 'The name of the foreignKey :'),
+        new Question('select', 'type', 'The type of the foreignKey :', types ),
+        new Question('text', 'referenceModel', 'The name of the reference model :'),
+        new Question('text', 'referenceAttr', 'The attribute to refer :'),
+        new Question('toggle', 'continue', 'Would you like to add an other attribute ?', false),
     ],
     askOptions : [
         new Question('text', 'tableName', 'Define the name of the table :'),
         new Question('toggle', 'underscored', 'Would you like to activate the underscored option ?', true),
         new Question('toggle', 'timestamps', 'Would you like to activate the timestamps option ?', true),
     ],
-    //askTableName : new Question('text', 'tableName', 'Define the name of the table :'),
-    //askUnderscored : new Question('confirm', 'underscored', 'Would you like to activate the underscored option ?', true),
-    //askTimestamps : new Question('confirm', 'timestamps', 'Would you like to activate the timestamps option ?', true),
     generate : async function(modelName){
         const attr = [];
+        const foreignKey = [];
         let status = true;
+        let repeatFK = true;
 
+        console.log(kleur.bold().green('Answer all questions in order to generate the model'));
         while (status){
-            const attributes = await prompts(this.askAttributes);
+            
+            const attributes = await prompts(this.askAttributes, { onCancel });
 
             if(!attributes.continue){
                 status = false;
@@ -34,11 +42,31 @@ const model = {
             attr.push(attributes);
         }
 
-        const options = await prompts(this.askOptions);
+        const hasForeignKey = await prompts(
+            new Question('confirm', 'hasForeignKey', 'Would you like to declare foreign keys'),
+            { onCancel }
+        );
+
+        if(hasForeignKey.hasForeignKey) {
+            while(repeatFK){
+                const attributeFK = await prompts(this.askForeignKeys, { onCancel });
+
+                if(!attributeFK.continue){
+                    repeatFK = false;
+                }
+    
+                delete attributeFK.continue;
+                foreignKey.push(attributeFK);
+            }
+        }
+
+        const options = await prompts(this.askOptions, { onCancel });
+        if(hasForeignKey.hasForeignKey) { console.log(kleur.bold().yellow(`Don't forget to require all references models for your class !`)) }
 
         return {
             modelName,
             attributes : attr,
+            foreignKey: hasForeignKey ? foreignKey : null,
             options
         };
     }

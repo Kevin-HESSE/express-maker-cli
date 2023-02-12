@@ -2,6 +2,7 @@
 
 const { Command } = require('commander');
 const program = new Command();
+
 const modelAction = require('./src/actions/modelAction');
 
 program
@@ -9,9 +10,11 @@ program
     .description('CLI for making files for an express server')
     .version('0.1.0');
 
-
 program.command('model')
     .argument('<string>', 'Name of a model')
     .action(modelAction)
+    .summary('generate a model')
+    .description('Generate a model based on the answer you give.')
+
 
 program.parse();

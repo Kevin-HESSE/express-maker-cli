@@ -1,7 +1,10 @@
-function Question (type, name, message, options){
+const kleur = require("kleur");
+const validator = require("../helpers/validate");
+
+function Question (type, name, message, options = null){
     this.type = type;
     this.name = name;
-    this.message = message;
+    this.message = kleur.cyan().underline(message);
 
     switch (this.type) {
         case 'toggle':
@@ -9,10 +12,12 @@ function Question (type, name, message, options){
             this.active = 'yes';
             this.inactive = 'no';
             break;
-        case 'autocomplete':
-            this.limit = 5;
-            this.choices = options.map( option => option);
+        case 'select':
+            this.choices = options.map( (option) => { return { title: option } });
+            this.format = (val) => val = options[val];
             break;
+        case 'text': 
+            this.validate = validator.string;
     }
 }
 
