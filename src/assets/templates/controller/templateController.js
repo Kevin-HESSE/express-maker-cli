@@ -1,6 +1,6 @@
 const mainController = {
   home: function(request, response){
-    response.send(`It's alive !`);
+    <% if(isApiRest) { %> response.json(`It's alive !`); <% } else { %>response.send(`It's alive !`); <% } %>
   }
 }
 
