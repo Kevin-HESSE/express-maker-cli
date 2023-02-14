@@ -1,8 +1,8 @@
-const Question = require('../models/Question');
 const prompts = require('prompts');
 const kleur = require('kleur');
 const types = require('../enum/typesEnum');
-const onCancel = require('../actions/exitAction');
+const Question = require('../models/Question');
+const onCancel = require('../commands/exitCommand');
 
 const model = {
     askAttributes : [

@@ -1,4 +1,4 @@
-const types = [
+module.exports = [
     'string',
     'text',
     'boolean' ,
@@ -10,6 +10,3 @@ const types = [
     'decimal',
     'dateonly',
 ];
-
-module.exports = types;
-

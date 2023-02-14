@@ -52,6 +52,16 @@ Pour afficher l'aide du programme :
 express-maker -h
 ```
 
+### Instanciation d'une application express
+
+Avant de commencer, vous devez préparer votre environnement de travail :
+
+```bash
+express-maker init
+```
+
+Cette commande va créer les dossiers et fichiers nécessaires pour une application Express simple. **Attention** les paquets ne seront pas installés. Il vous donnera la commande en fonction de vos besoins.
+
 ### Génération d'un modèle
 
 Pour lancer la procédure de génération de model :
@@ -70,10 +80,8 @@ Actuellement le répertoire où ces derniers sont créées est le `./app/models`
 
 ### Court terme
 
-- Permettre de changer le répertoire par défaut où sont créées les modèles.
 - Génération automatique du fichier pour se connecter à `sequelize`.
 
 ### Moyen / long terme
 
 - Génération des routers / controllers
-- Génération d'un fichier index basique pour démarrer un projet sur express.

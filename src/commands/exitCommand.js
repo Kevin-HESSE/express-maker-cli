@@ -1,8 +1,8 @@
 const { exit } = require('process');
 
-function exitAction(prompt){
+function exitCommand(prompt){
   console.log(`Aborting action !`);
   exit(1);
 }
 
-module.exports = exitAction;
+module.exports = exitCommand;
