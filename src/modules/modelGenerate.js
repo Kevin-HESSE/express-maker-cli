@@ -1,8 +1,8 @@
 const prompts = require('prompts');
-const kleur = require('kleur');
 const types = require('../enum/typesEnum');
 const Question = require('../models/Question');
 const onCancel = require('../commands/exitCommand');
+const displayHelper = require('../helpers/displayHelper');
 
 const model = {
     askAttributes : [
@@ -29,7 +29,7 @@ const model = {
         let status = true;
         let repeatFK = true;
 
-        console.log(kleur.bold().green('Answer all questions in order to generate the model'));
+        displayHelper.warning('Answer all questions in order to generate the model');
         while (status){
             
             const attributes = await prompts(this.askAttributes, { onCancel });
@@ -61,7 +61,7 @@ const model = {
         }
 
         const options = await prompts(this.askOptions, { onCancel });
-        if(hasForeignKey.hasForeignKey) { console.log(kleur.bold().yellow(`Don't forget to require all references models for your class !`)) }
+        if(hasForeignKey.hasForeignKey) { displayHelper.warning(`Don't forget to require all references models for your class !`) }
 
         return {
             modelName,

@@ -18,6 +18,10 @@ function Question (type, name, message, options = null){
             break;
         case 'text': 
             this.validate = validator.string;
+            break;
+        case 'number':
+            this.initial = 3000;
+            break;
     }
 }
 

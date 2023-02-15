@@ -1,14 +1,18 @@
-const fs = require('fs/promises');
-const kleur = require('kleur');
+const fs = require('fs');
 
+/**
+ * A list of method related to directory
+ * @method create
+ */
 const directoryHelper = {
+  /**
+   * Verify if the directory exists, if not create it with permission 0755
+   * @param {String} directory THe name of the directory
+   */
   create: async function(directory) {
-      try {
-        await fs.mkdir(directory, {mode: 0775});
-        console.log(`The directory ${ kleur.green(directory) } has been created.`);
-      } catch (error) {
-        console.log(`The directory ${ kleur.yellow(directory) } already exists.`);
-      }
+    if(!fs.existsSync(directory)){
+      fs.mkdirSync(directory, {mode: 0755});
+    }
   }
 };
 

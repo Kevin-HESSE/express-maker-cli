@@ -14,12 +14,14 @@
     }
 ]
 ```
-2. Saisir un premier attribut: 
-    - Le nom 
+
+2. Saisir un premier attribut:
+
+    - Le nom
     - Le type
     - defaultvalue
     - allowNull
-    
+
 ```js
 [
    {
@@ -47,14 +49,15 @@
     },
 ]
 ```
-3. Proposer de continuer.
+
+1. Proposer de continuer.
     - Si oui, recommencer l'étape 2
     - Si non, continuez
-4. Saisir le nom de la table
-4. Deux possibilités 
+2. Saisir le nom de la table
+3. Deux possibilités 
     - soit un fichier config
     - soit poser des questions
-    
+
 ## Element annexe
 
 Validator string

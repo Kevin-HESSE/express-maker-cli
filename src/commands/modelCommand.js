@@ -1,22 +1,25 @@
 const model = require('../modules/modelGenerate');
 const validator = require('../helpers/validate');
-const kleur = require('kleur');
-const fileHelper = require('../helpers/fileRender');
+const fileHelper = require('../helpers/fileHelper');
 const pathHelpers = require('../helpers/pathHelper');
+const displayHelper = require('../helpers/displayHelper');
 
+/**
+ * Function executed with the command `express-maker model <String>`.
+ * 
+ * It asks several questions in order to create a model for a project with Sequelize. 
+ * 
+ */
 async function modelCommand(argv) {
     if(validator.string(argv) === true){
-        if(pathHelpers.getModelDirectory()){
+        if(pathHelpers.getDirectory('models')){
             const modelGenerated = await model.generate(argv);
             fileHelper.createModel(modelGenerated)
         } else {
-            console.error(`
-An error has occured :
-    ${kleur.red().underline(`Error : Have you create the followed directory ? [ ${ kleur.yellow('./app/models') } or ${ kleur.yellow('./src/models') } ]`)})
-            `)
+            displayHelper.errorDirectory(['./app/models', './src/models']);
         }
     } else {
-        console.log(kleur.red(`The name of the model is incorrect.`))
+        displayHelper.errorMessage(`The name of the model is incorrect.`);
     }
 }
 
