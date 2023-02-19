@@ -10,6 +10,10 @@ const _ = require('lodash');
  * @method errorMessage
  */
 const displayHelper = {
+
+  prompt: function(message){
+    return kleur.cyan().underline(message)
+  },
   /**
    * Display a message to indicate when a fil is created and where.
    * @param {String} type The type of the file

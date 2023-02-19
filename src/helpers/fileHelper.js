@@ -6,6 +6,7 @@ const pathHelpers = require('./pathHelper');
 const formatContent = require('./beautifyHelper');
 const displayHelper = require('./displayHelper');
 const filesEnum = require('../enum/fileEnum');
+const directoryHelper = require('./directoryHelper');
 
 /**
  * A list of method related to manipulate files
@@ -51,7 +52,7 @@ const fileHelper = {
      * @param {Object} model Information needed to create the file
      */
     createModel: function(model){
-        const content = fileHelper.content('modelTemplate', model);
+        const content = fileHelper.content('sequelize/modelTemplate', model);
         const modelDirectory = pathHelpers.getDirectory('models');
 
         if(modelDirectory){
@@ -86,6 +87,15 @@ const fileHelper = {
         displayHelper.fileCreated(filesEnum.controller, model.modelName, controllerDirectory);
     },
 
+    createConnect: function(db){
+        const content = fileHelper.content('sequelize/connect', { db });
+
+        const servicesDirectory = pathHelpers.getDirectory('services', true);
+
+        fs.writeFileSync(`${servicesDirectory}/dbConnectService.js`, content);
+        displayHelper.fileCreated(filesEnum.helper, 'dbConnectService', servicesDirectory);
+    },
+
     /**
      * Copy an `.env` and a `.env.example` file at the root of the project.
      */
@@ -94,6 +104,10 @@ const fileHelper = {
         const envFile = path.resolve(templateDirectory, `env.template`);
         fs.copyFileSync(envFile, './.env');
         fs.copyFileSync(envFile, './.env.example');
+    },
+
+    modifyEnv: function(){
+
     },
 
     /**

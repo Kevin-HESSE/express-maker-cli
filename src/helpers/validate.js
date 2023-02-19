@@ -9,15 +9,6 @@ const validator = {
     } else {
         return true;
     }
-  },
-  choice: function(val){
-    console.log(val);
-    if(!types.includes(val)){
-      
-      return `Warning : the selected type doesn't exist !`;
-    } else {
-      return true;
-    }
   }
 }
 

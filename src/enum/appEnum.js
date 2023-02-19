@@ -1,4 +1,10 @@
 module.exports = [
-  'app',
-  'src'
+  {
+    title: 'app',
+    value: 'app'
+  },
+  {
+    title: 'src',
+    value: 'src'
+  }
 ];

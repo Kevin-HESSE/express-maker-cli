@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const directoryHelper = require('./directoryHelper');
 
 /**
  * pathHelpers contains all methods which check if some directory exists or not
@@ -28,11 +29,15 @@ const pathHelpers = {
    * @param {String} targetDirectory The directory to verify
    * @returns {String || null} The path to the specified directory or null
    */
-  getDirectory: function(targetDirectory){
+  getDirectory: function(targetDirectory, create=false){
     const appDirectory = pathHelpers.getAppDirectory();
-
-    if(appDirectory && fs.existsSync(`${appDirectory}/${targetDirectory}`)) {
-      return `${appDirectory}/${targetDirectory}`;
+    const directory = `${appDirectory}/${targetDirectory}`;
+    
+    if(appDirectory && fs.existsSync(directory)) {
+      return directory;
+    } else if(create){
+      directoryHelper.create(directory);
+      return directory;
     } else {
       return null;
     }
@@ -43,7 +48,7 @@ const pathHelpers = {
    * @returns {String} Path of the template directory
    */
   getTemplateDirectory: function(){
-    return path.resolve(__dirname, `../assets/templates`);
+    return path.resolve(__dirname, `../templates`);
   }
 };
 
