@@ -37,6 +37,7 @@ async function initCommand(){
   await directoryHelper.create(`./${appDirectory}/models`);
   await directoryHelper.create(`./${appDirectory}/routers`);
   await directoryHelper.create(`./${appDirectory}/controllers`);
+  await directoryHelper.create(`./${appDirectory}/middlewares`);
 
   fileHelper.copyEnv();
   fileHelper.copyGitIgnore();

@@ -11,6 +11,11 @@ const _ = require('lodash');
  */
 const displayHelper = {
 
+  /**
+   * Convert a message with kleur.
+   * @param {String} message The message to display
+   * @returns A formatted message with kleur
+   */
   prompt: function(message){
     return kleur.cyan().underline(message)
   },
@@ -21,7 +26,7 @@ const displayHelper = {
    * @param {String} directory The directory of the file
    */
   fileCreated: function(type, name, directory){
-    console.log(`${ type } ${ kleur.green(name) } has been created in ${ kleur.green(directory) }`)
+    console.log(`${ type } : ${ kleur.green(name) } has been created in ${ kleur.green(directory) }`)
   },
 
   /**

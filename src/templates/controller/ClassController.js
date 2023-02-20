@@ -1,12 +1,9 @@
 const CommonController = require('./CommonController');
 
-class ClientController extends CommonController{
+class <%= name %>Controller extends CommonController{
   constructor(model){
     super(model);
   };
-
-
-
 };
 
-module.exports = ClientController;
+module.exports = <%= name %>Controller;

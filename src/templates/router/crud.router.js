@@ -1,19 +1,19 @@
 const { Router } = require('express');
-const { Car } = require('../models');
-const controller = require('../controllers/CarController');
+const <%= name %> = require('../models/<%= name %>');
+const controller = require('../controllers/<%= name %>Controller');
 const middleware = require('../middlewares/RouterMiddelware');
 
-const CarController = new controller(Car);
-const CarMiddleware = new middleware(Car);
+const <%= name %>Controller = new controller(<%= name %>);
+const <%= name %>Middleware = new middleware(<%= name %>);
 
-const carRouter = Router();
+const <%= name.toLowerCase() %>Router = Router();
 
-clientRouter.param('carId', CarMiddleware.getParam);
+clientRouter.param('<%= name.toLowerCase() %>Id', <%= name %>Middleware.getParam);
 
-carRouter.get('/', CarController.getAll);
-carRouter.get('/:carId', CarController.getOne);
-carRouter.post('/', CarController.createOne);
-carRouter.put('/:carId', CarController.updateOne)
-carRouter.delete('/:cardId', CarController.deleteOne);
+<%= name.toLowerCase() %>Router.get('/', <%= name %>Controller.getAll);
+<%= name.toLowerCase() %>Router.get('/:<%= name.toLowerCase() %>Id', <%= name %>Controller.getOne);
+<%= name.toLowerCase() %>Router.post('/', <%= name %>Controller.createOne);
+<%= name.toLowerCase() %>Router.put('/:<%= name.toLowerCase() %>Id', <%= name %>Controller.updateOne)
+<%= name.toLowerCase() %>Router.delete('/:<%= name.toLowerCase() %>Id', <%= name %>Controller.deleteOne);
 
-module.exports = carRouter;
+module.exports = <%= name.toLowerCase() %>Router;

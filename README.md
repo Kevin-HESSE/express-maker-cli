@@ -24,16 +24,17 @@ Pour pouvoir utiliser ce package dans un autre projet, vous devez exécuter deux
 
 Dans un premier temps, on va dire à NPM de considérer ce package `Express maker cli` comme une dépendance. Ainsi ce dernier pourra être installé dans n'importe quel projet. 
 
-Taper la commande suivante dans le répertoire du package :
+Taper les commandes suivantes dans le répertoire du package :
 
 ```bash
-npm link
+npm install #Installation des packages nécessaires.
+npm link #Définit ce package comme module installable.
 ```
 
 Ensuite pour l'installer comme dépendance d'un projet, rendez-vous dans le répertoire de votre projet puis tapez dans votre terminal :
 
 ```bash
-npm link express-maker-cli
+npm link express-maker-cli 
 ```
 
 ## Utilisation du package
@@ -62,12 +63,22 @@ express-maker init
 
 Cette commande va créer les dossiers et fichiers nécessaires pour une application Express simple. **Attention** les paquets ne seront pas installés. Il vous donnera la commande en fonction de vos besoins.
 
-### Génération d'un modèle
+### Instanciation de sequelize
+
+Pour générer le fichier permettant de créer une instance sequelize :
+
+```bash
+express-maker sequelize:connect
+```
+
+Cette commande va créer un répertoire `service` dans le dossier de l'application et un fichier `dbConnectService.js` à l'intérieur. Ce fichier est important car il sert également d'import dans les models générés par `express-maker`.
+
+### Génération d'un modèle sequelize
 
 Pour lancer la procédure de génération de model :
 
 ```bash
-express-maker model <nameModel>
+express-maker sequelize:model <nameModel>
 ```
 
 `<nameModel>` sera le nom donnée de votre fichier et de votre classe à la fin du processus.

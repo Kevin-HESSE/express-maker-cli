@@ -2,10 +2,15 @@ const displayHelper = require("../helpers/displayHelper");
 const fileHelper = require("../helpers/fileHelper");
 const connectGenerate = require("../modules/connectGenerate");
 
+/**
+ * Function called by the command `express-maker sequelize-connect`
+ * 
+ * It create a file which allow sequelize to connect to the db based on the env variable.
+ */
 async function connectCommand(){
   const { db } = await connectGenerate();
   let npm = `npm i sequelize`;
-  
+
   switch (db) {
     case 'mysql':
       npm += ' mysql2'

@@ -6,7 +6,6 @@ const pathHelpers = require('./pathHelper');
 const formatContent = require('./beautifyHelper');
 const displayHelper = require('./displayHelper');
 const filesEnum = require('../enum/fileEnum');
-const directoryHelper = require('./directoryHelper');
 
 /**
  * A list of method related to manipulate files
@@ -87,6 +86,10 @@ const fileHelper = {
         displayHelper.fileCreated(filesEnum.controller, model.modelName, controllerDirectory);
     },
 
+    /**
+     * Create the service between sequelize and the requested database from the user inside the services directory.
+     * @param {String} db The database requested
+     */
     createConnect: function(db){
         const content = fileHelper.content('sequelize/connect', { db });
 
@@ -107,7 +110,7 @@ const fileHelper = {
     },
 
     modifyEnv: function(){
-
+        //Todo
     },
 
     /**
