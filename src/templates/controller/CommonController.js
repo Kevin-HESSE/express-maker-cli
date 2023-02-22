@@ -34,7 +34,7 @@ class CommonController {
    * @param {Request} request 
    * @param {Response} response 
    */
-  create = async (request, response) => {
+  createOne = async (request, response) => {
     const data = request.body;
 
     try {
@@ -52,7 +52,7 @@ class CommonController {
    * @param {Request} request 
    * @param {Response} response 
    */
-  update = async (request, response) => {
+  updateOne = async (request, response) => {
     const data = request.body;
 
     try {

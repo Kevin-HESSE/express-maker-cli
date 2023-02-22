@@ -95,6 +95,9 @@ const fileHelper = {
 
         const servicesDirectory = pathHelpers.getDirectory('services', true);
 
+        fs.appendFileSync('./.env', `\n${db.toUpperCase()}_URL=postgres://user:password@localhost/database`);
+        fs.appendFileSync('./.env.example', `\n${db.toUpperCase()}_URL=postgres://user:password@localhost/database`);
+
         fs.writeFileSync(`${servicesDirectory}/dbConnectService.js`, content);
         displayHelper.fileCreated(filesEnum.helper, 'dbConnectService', servicesDirectory);
     },

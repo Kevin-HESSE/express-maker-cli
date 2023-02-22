@@ -11,7 +11,7 @@ const crudCommand = require('./src/commands/crudCommand');
 program
     .name('express-maker-cli')
     .description('CLI for making files for an express server')
-    .version('0.1.0');
+    .version('0.5.0')
 
 program.command('init')
     .action(initCommand)
@@ -29,6 +29,9 @@ program.command('sequelize:model')
 
 program.command('sequelize:crud')
     .action(crudCommand)
+    .option('-r, --router', 'only the router')
+    .option('-c, --controller', 'only the controller')
     .summary('generate a controller and a router for sequelize')
     .description(`Generate a CRUD controller and a CRUD router for sequelize. Be wary, the default response is in json. \nIf you need to change this behaviour, please refer to the documentation.`);
+
 program.parse();

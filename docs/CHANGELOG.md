@@ -1,9 +1,10 @@
-# Version: 0.5.0
+# Version: 0.6.0
 
 ## New Features
 
 - New command available :
   - `express-maker sequelize:connect` &rarr; Generate a file into  `appDirectory/services/dbConnectService.js` which configure the connection between sequelize and the database.
+  - `express-maker sequelize:crud` &rarr; Generate a router and a controller file for sequelize and for APIRest Server.
 
 ## Modification
 

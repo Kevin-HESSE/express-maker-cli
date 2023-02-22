@@ -12,19 +12,24 @@ const crudHelper = {
     const files = directoryHelper.read(`${this.appDirectory}/models`).map((file) => file.replace('.js', ''));
     return files;
   },
+
   createList: function(tags){
     const lists = tags.map((tag) =>{ return { title: tag, value: tag } });
     return lists;
   },
-  checkFilesImportant: function(){
+
+  checkCommonController: function(){
     if(!fs.existsSync(`${this.appDirectory}/controllers/CommonController.js`)){
       this.copyFile('controller', 'CommonController', 'controllers', 'CommonController');
     }
- 
-    if(!fs.existsSync(`${this.appDirectory}/middlewares/ParamRouterMiddleware.js`)){
-      this.copyFile('middlewares', 'RouterMiddleware', 'middlewares', 'ParamRouterMiddleware');
-    }
   },
+
+  checkRouterMiddleware: function(){
+       if(!fs.existsSync(`${this.appDirectory}/middlewares/ParamRouterMiddleware.js`)){
+         this.copyFile('middlewares', 'RouterMiddleware', 'middlewares', 'ParamRouterMiddleware');
+       }
+  },
+
   copyFile: function(srcDir, srcFile, userDir, userFile){
     const templateDirectory = pathHelper.getTemplateDirectory();
     const template = path.resolve(templateDirectory, `${srcDir}/${srcFile}.js`);
@@ -33,16 +38,21 @@ const crudHelper = {
 
     displayHelper.fileCreated(srcDir.toUpperCase(), userFile, `${this.appDirectory}/${userDir}/`)
   },
-  createCRUD: function(model){
-    console.log(model);
-    const routerContent = fileHelper.content('router/crud.router', model);
+
+  createCRUDController: function(model){
     const controllerContent = fileHelper.content('controller/ClassController', model);
+    
+    fs.writeFileSync(`${this.appDirectory}/controllers/${model.name}Controller.js`, controllerContent);
+    
+    displayHelper.fileCreated('Controller', `${model.name}Controller.js`, `${this.appDirectory}/controllers`);
+  },
+  
+  createCRUDRouter: function(model){
+    const routerContent = fileHelper.content('router/crud.router', model);
 
     fs.writeFileSync(`${this.appDirectory}/routers/${model.name.toLowerCase()}.router.js`, routerContent);
-    fs.writeFileSync(`${this.appDirectory}/controllers/${model.name}Controller.js`, controllerContent);
-
+    
     displayHelper.fileCreated('Router', `${model.name.toLowerCase()}.router.js`, `${this.appDirectory}/routers`);
-    displayHelper.fileCreated('Controller', `${model.name}Controller.js`, `${this.appDirectory}/controllers`);
   }
 };
 

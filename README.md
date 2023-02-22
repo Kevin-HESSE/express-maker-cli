@@ -27,8 +27,8 @@ Dans un premier temps, on va dire à NPM de considérer ce package `Express make
 Taper les commandes suivantes dans le répertoire du package :
 
 ```bash
-npm install #Installation des packages nécessaires.
-npm link #Définit ce package comme module installable.
+npm install 
+npm link
 ```
 
 Ensuite pour l'installer comme dépendance d'un projet, rendez-vous dans le répertoire de votre projet puis tapez dans votre terminal :
@@ -71,7 +71,7 @@ Pour générer le fichier permettant de créer une instance sequelize :
 express-maker sequelize:connect
 ```
 
-Cette commande va créer un répertoire `service` dans le dossier de l'application et un fichier `dbConnectService.js` à l'intérieur. Ce fichier est important car il sert également d'import dans les models générés par `express-maker`.
+Cette commande va créer un répertoire `service` dans le dossier de l'application et un fichier `dbConnectService.js` à l'intérieur. Ce fichier est important car il sert également d'import dans les models générés par `express-maker`. Il rajoute également une ligne dans les fichiers `.env` et `.env.example` à modifier permettant de se connecter à la base de donée.
 
 ### Génération d'un modèle sequelize
 
@@ -87,12 +87,86 @@ Une série de question vont vous être posé qui permettront la création du mod
 
 Actuellement le répertoire où ces derniers sont créées est le `./app/models`
 
-## Améliorations prévus
+### Génération d'un outil de CRUD (Router et/ou Controller)
 
-### Court terme
+Pour générer un crud Router / Controller :
 
-- Génération automatique du fichier pour se connecter à `sequelize`.
+```bash
+express-maker sequelize:crud 
+```
 
-### Moyen / long terme
+Il va chercher dans le dossier `src/models` ou `app/models`, les models existants. Puis selon votre choix, il va générer le router et le controller associé à ce dernier.
 
-- Génération des routers / controllers
+**Attention : les controllers sont basés sur des classes.**
+
+Cette commande vient avec deux options facultatives.
+
+```bash
+express-maker sequelize:crud -r #Crée uniquement le router
+express-maker sequelize:crud -c #Crée uniquement le controller
+```
+
+- Contenu additionnel :
+Quand un router est crée, un middleware `ParamRouterMiddleware` est automatiquement crée. Il s'agit d'une classe avec une methode qui permet de faire la requete dans la base de donnée à l'aide de sequelize. Il stocke le résultat dans une propriété de l'objet `request` d'express.
+
+| Model | Paramètre de route | Objet instancié |
+| ---- | ---- | ---- |
+| Card | cardId | request.card |
+| Tag | tagId | request.tag |
+| ... | ... | ...|
+
+Lors de la création d'un controller, une classe est importée par défaut : `CommonController` avec des méthodes prédéfinis.
+
+| Méthodes | Fonctionnalités | Particularités | Format de retour |
+| ---- | ---- | ---- | ---- |
+| getAll | Récupére tous les éléments d'une table |  | JSON |
+| getOne | Renvoie l'élèment trouvé | L'élément renvoyé est récupéré par le middleware du router | JSON |
+| createOne | Créer un élément dans la base de données | Aucune vérfication est effectué | JSON |
+| updateOne | Met à jour un élément dans la base de données | Aucune vérfication est effectué | JSON |
+| deleteOne | Supprime un élément dans la base de données | L'élément suuprimé est récupéré par le middleware du router | JSON |
+
+Ces méthodes sont importés dans le controller crée par la commande. Elles peuvent être surchargées en utilisant les mêmes méthodes. Cependant attention, si vous souhaitez utiliser le mot clé `this`, reprenez la même syntaxe d'écriture pour créer les méthodes.
+
+## Avenir du projet
+
+Je suis content du résultat. L'outil est suffisant puissant pour une utilisation personnelle et mettre en place un petit serveur express fonctionnelle mais peu efficace.
+
+Le projet ne va pas trop évoluer dans les prochaines semaines car le cahier d'évolution est assez lourd :
+
+- TypeScript
+- Architecture du projet
+- Test technique
+- Une meilleure documentation
+
+### TypeScript et Architecture du projet
+
+Les deux sont liées !
+
+Dans l'optique où, je souhaite ouvrir à la contribution, je veux m'assurer que l'environnement de développement soit cadré et cohérent.
+
+- Certains éléments mis en place sont un peu brouillon (de mon point de vue).
+- Il manque encore pas mal d'options possibles
+  - Fichier de configuration
+  - Possibilité d'ajout de typescript
+  - Autre librairie de bdd (ex: mongo)
+
+Je vais profiter de ce mois de spécialisation pour réfléchir aux améliorations potentiels. Je veux en profiter pour renforcer mes connaissances acquises pour éviter trop de refactorisation par la suite.
+
+Chaque amélioration viendra petit à petit. J'ai une bonne base sur laquelle je vais pouvoir travailler. Je ne vais pas repartir de zéro mais tout reprendre et remanier l'ensemble.
+
+### Test technique
+
+Pour assurer un maximum d'efficacité du programme, je dois m'assurer de son bon fonctionnement selon les versions de node. L'idée sera qu'elle soit efficace au minimum sur la version 14 voire 12 maximum.
+
+### Une meilleure documentation
+
+Je me suis rendu compte que certains outils ne donnent pas l'envie de les essayer / utiliser si leur documentation est obscure. Je vois large, en cours de réflexion :
+
+- un site web dédié à mon programme
+- différent readme en fonction des commandes
+
+Mon programme impose une certaine logique quand il importe les documents. Mon but est de rendre le plus compréhensible et extensible les fonctionnalités. Les controllers par exemple fonctionnent sur le principe des classes. Chose peu commune dans le monde du JavaScript.
+
+### Conclusion
+
+Il y a encore beaucoup de boulot :smile: . Je vais prendre mon temps et le réussir jusqu'au bout et avec passion. Je veux être sur dans quel direction allait avant de le finaliser.

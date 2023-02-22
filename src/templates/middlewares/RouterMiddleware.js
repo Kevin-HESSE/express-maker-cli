@@ -1,5 +1,3 @@
-const messageHelper = require('../helpers/messageHelper');
-
 class RouterMiddleware {
   constructor(model){
     this.model = model;
@@ -19,7 +17,7 @@ class RouterMiddleware {
         next('route');
       }
     } else {
-      messageHelper.requestError(response);
+      response.status(400).json({message: `Bad request`});
     } 
   }
 }

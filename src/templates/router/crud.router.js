@@ -1,14 +1,14 @@
 const { Router } = require('express');
 const <%= name %> = require('../models/<%= name %>');
 const controller = require('../controllers/<%= name %>Controller');
-const middleware = require('../middlewares/RouterMiddelware');
+const middleware = require('../middlewares/ParamRouterMiddleware');
 
 const <%= name %>Controller = new controller(<%= name %>);
 const <%= name %>Middleware = new middleware(<%= name %>);
 
 const <%= name.toLowerCase() %>Router = Router();
 
-clientRouter.param('<%= name.toLowerCase() %>Id', <%= name %>Middleware.getParam);
+<%= name.toLowerCase() %>Router.param('<%= name.toLowerCase() %>Id', <%= name %>Middleware.getParam);
 
 <%= name.toLowerCase() %>Router.get('/', <%= name %>Controller.getAll);
 <%= name.toLowerCase() %>Router.get('/:<%= name.toLowerCase() %>Id', <%= name %>Controller.getOne);

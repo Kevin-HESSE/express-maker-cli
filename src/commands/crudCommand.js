@@ -2,7 +2,17 @@ const crudHelper = require("../helpers/crudHelper");
 const displayHelper = require('../helpers/displayHelper');
 const crudGenerate = require("../modules/crudGenerate");
 
-async function crudCommand(){
+function makeController(model){
+  crudHelper.checkCommonController();
+  crudHelper.createCRUDController(model);
+};
+
+function makeRouter(model){
+  crudHelper.checkRouterMiddleware();
+  crudHelper.createCRUDRouter(model);
+}
+
+async function crudCommand(opts){
   const models = crudHelper.getAllModels();
 
   if(models.length === 0) {
@@ -12,8 +22,14 @@ async function crudCommand(){
   const listsModels = crudHelper.createList(models);
   const model = await crudGenerate(listsModels);
 
-  crudHelper.checkFilesImportant();
-  crudHelper.createCRUD(model);
+  if(opts.controller){
+    makeController(model);
+  } else if (opts.router) {
+    makeRouter(model);
+  } else {
+    makeRouter(model);
+    makeController(model);
+  }
 };
 
 module.exports = crudCommand;

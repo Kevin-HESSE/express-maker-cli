@@ -21,9 +21,9 @@ async function initCommand(){
   let npm = `npm i express dotenv`;
 
   if(userConfig.hasViewEngine){
-    await directoryHelper.create('./views');
-    await directoryHelper.create('./public');
-    await directoryHelper.create('./public/css');
+    directoryHelper.create('./views');
+    directoryHelper.create('./public');
+    directoryHelper.create('./public/css');
     npm += ` ejs`;
   }
 
@@ -33,11 +33,11 @@ async function initCommand(){
 
   const appDirectory = userConfig.appDirectory;
 
-  await directoryHelper.create(`./${appDirectory}`);
-  await directoryHelper.create(`./${appDirectory}/models`);
-  await directoryHelper.create(`./${appDirectory}/routers`);
-  await directoryHelper.create(`./${appDirectory}/controllers`);
-  await directoryHelper.create(`./${appDirectory}/middlewares`);
+  directoryHelper.create(`./${appDirectory}`);
+  directoryHelper.create(`./${appDirectory}/models`);
+  directoryHelper.create(`./${appDirectory}/routers`);
+  directoryHelper.create(`./${appDirectory}/controllers`);
+  directoryHelper.create(`./${appDirectory}/middlewares`);
 
   fileHelper.copyEnv();
   fileHelper.copyGitIgnore();
