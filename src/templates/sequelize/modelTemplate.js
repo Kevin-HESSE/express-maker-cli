@@ -1,9 +1,9 @@
-const { Model, Datatypes} = require('sequelize');
+const { sequelize, Model, DataTypes} = require('../services/dbConnectService');
 
 class <%= modelName  %> extends Model {}
 
 <%= modelName %>.init({ <% for(const attribute of attributes) { %>
-        <%= attribute.attribute %>: { type: Datatypes.<%=attribute.type.toUpperCase() %>,
+        <%= attribute.attribute %>: { type: DataTypes.<%=attribute.type.toUpperCase() %>,
             allowNull : <%= attribute.allowNull %>
         },<% } %><% if(foreignKey) { for (const key of foreignKey) { %>  <%= key.attribute %>: { type: Datatypes.<%=key.type.toUpperCase() %>,
         allowNull : false,

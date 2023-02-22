@@ -1,28 +1,19 @@
-const kleur = require("kleur");
-const validator = require("../helpers/validate");
+const displayHelper = require("../helpers/displayHelper");
 
-function Question (type, name, message, options = null){
+/**
+ * Class related to a question for prompts, only used to be extended.
+ */
+class Question {
+  /**
+   * @param {String} type The type of the question
+   * @param {String} name The key of the response
+   * @param {String} message The message to display
+   */
+  constructor(type, name, message){
     this.type = type;
     this.name = name;
-    this.message = kleur.cyan().underline(message);
-
-    switch (this.type) {
-        case 'toggle':
-            this.initial = options;
-            this.active = 'yes';
-            this.inactive = 'no';
-            break;
-        case 'select':
-            this.choices = options.map( (option) => { return { title: option } });
-            this.format = (val) => val = options[val];
-            break;
-        case 'text': 
-            this.validate = validator.string;
-            break;
-        case 'number':
-            this.initial = 3000;
-            break;
-    }
+    this.message = displayHelper.prompt(message);
+  }
 }
 
 module.exports = Question;

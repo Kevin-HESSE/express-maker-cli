@@ -51,7 +51,7 @@ const fileHelper = {
      * @param {Object} model Information needed to create the file
      */
     createModel: function(model){
-        const content = fileHelper.content('modelTemplate', model);
+        const content = fileHelper.content('sequelize/modelTemplate', model);
         const modelDirectory = pathHelpers.getDirectory('models');
 
         if(modelDirectory){
@@ -87,6 +87,22 @@ const fileHelper = {
     },
 
     /**
+     * Create the service between sequelize and the requested database from the user inside the services directory.
+     * @param {String} db The database requested
+     */
+    createConnect: function(db){
+        const content = fileHelper.content('sequelize/connect', { db });
+
+        const servicesDirectory = pathHelpers.getDirectory('services', true);
+
+        fs.appendFileSync('./.env', `\n${db.toUpperCase()}_URL=postgres://user:password@localhost/database`);
+        fs.appendFileSync('./.env.example', `\n${db.toUpperCase()}_URL=postgres://user:password@localhost/database`);
+
+        fs.writeFileSync(`${servicesDirectory}/dbConnectService.js`, content);
+        displayHelper.fileCreated(filesEnum.helper, 'dbConnectService', servicesDirectory);
+    },
+
+    /**
      * Copy an `.env` and a `.env.example` file at the root of the project.
      */
     copyEnv: function(){
@@ -94,6 +110,10 @@ const fileHelper = {
         const envFile = path.resolve(templateDirectory, `env.template`);
         fs.copyFileSync(envFile, './.env');
         fs.copyFileSync(envFile, './.env.example');
+    },
+
+    modifyEnv: function(){
+        //Todo
     },
 
     /**
