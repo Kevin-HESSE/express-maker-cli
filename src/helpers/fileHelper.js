@@ -36,14 +36,16 @@ const fileHelper = {
     },
 
     /**
-     * Create an `index.js` file with basic setup
-     * @param {String} template The name of the template to copy
+     * Create an `server.js` file with basic setup
      * @param {Object} model Information needed to create the file
+     * @param {String} appDirectory The directory of the application
      */
-    createIndex: function (template, model){
-        const content = fileHelper.content(template, model);
-        fs.writeFileSync('./index.js', content);
-        displayHelper.fileCreated(filesEnum.index, 'index.js', 'the root of the project');
+    createServer: function (model, appDirectory){
+        const serverContent = fileHelper.content('server', model);
+        fs.writeFileSync('./server.js', serverContent);
+        const appContent = fileHelper.content('appIndex', model);
+        fs.writeFileSync(`./${appDirectory}/index.js`, appContent);
+        displayHelper.fileCreated(filesEnum.index, 'server.js', 'the root of the project');
     },
 
     /**
