@@ -9,8 +9,6 @@ La partie opérationnelle d'`express maker CLI`  s'inspire de :
 - `sequelize CLI`
 - `symfony/maker-bundle`, un package qui permet la création de controller et d'entité sur le framework Symfony
 
-Le processus de création de modèle a été poussé plus loin avec une serie de question, qui permette une génération dynamique selon les besoins de l'utilisateur.
-
 ## FeedBack
 
 Merci d'utiliser les issues du repos github dans les cas suivant :
@@ -60,72 +58,7 @@ Avant de commencer, vous devez préparer votre environnement de travail :
 ```bash
 express-maker init
 ```
-
 Cette commande va créer les dossiers et fichiers nécessaires pour une application Express simple. **Attention** les paquets ne seront pas installés. Il vous donnera la commande en fonction de vos besoins.
-
-### Instanciation de sequelize
-
-Pour générer le fichier permettant de créer une instance sequelize :
-
-```bash
-express-maker sequelize:connect
-```
-
-Cette commande va créer un répertoire `service` dans le dossier de l'application et un fichier `dbConnectService.js` à l'intérieur. Ce fichier est important car il sert également d'import dans les models générés par `express-maker`. Il rajoute également une ligne dans les fichiers `.env` et `.env.example` à modifier permettant de se connecter à la base de donée.
-
-### Génération d'un modèle sequelize
-
-Pour lancer la procédure de génération de model :
-
-```bash
-express-maker sequelize:model <nameModel>
-```
-
-`<nameModel>` sera le nom donnée de votre fichier et de votre classe à la fin du processus.
-
-Une série de question vont vous être posé qui permettront la création du modèle.
-
-Actuellement le répertoire où ces derniers sont créées est le `./app/models`
-
-### Génération d'un outil de CRUD (Router et/ou Controller)
-
-Pour générer un crud Router / Controller :
-
-```bash
-express-maker sequelize:crud 
-```
-
-Il va chercher dans le dossier `src/models` ou `app/models`, les models existants. Puis selon votre choix, il va générer le router et le controller associé à ce dernier.
-
-**Attention : les controllers sont basés sur des classes.**
-
-Cette commande vient avec deux options facultatives.
-
-```bash
-express-maker sequelize:crud -r #Crée uniquement le router
-express-maker sequelize:crud -c #Crée uniquement le controller
-```
-
-- Contenu additionnel :
-Quand un router est crée, un middleware `ParamRouterMiddleware` est automatiquement crée. Il s'agit d'une classe avec une methode qui permet de faire la requete dans la base de donnée à l'aide de sequelize. Il stocke le résultat dans une propriété de l'objet `request` d'express.
-
-| Model | Paramètre de route | Objet instancié |
-| ---- | ---- | ---- |
-| Card | cardId | request.card |
-| Tag | tagId | request.tag |
-| ... | ... | ...|
-
-Lors de la création d'un controller, une classe est importée par défaut : `CommonController` avec des méthodes prédéfinis.
-
-| Méthodes | Fonctionnalités | Particularités | Format de retour |
-| ---- | ---- | ---- | ---- |
-| getAll | Récupére tous les éléments d'une table |  | JSON |
-| getOne | Renvoie l'élèment trouvé | L'élément renvoyé est récupéré par le middleware du router | JSON |
-| createOne | Créer un élément dans la base de données | Aucune vérfication est effectué | JSON |
-| updateOne | Met à jour un élément dans la base de données | Aucune vérfication est effectué | JSON |
-| deleteOne | Supprime un élément dans la base de données | L'élément suuprimé est récupéré par le middleware du router | JSON |
-
-Ces méthodes sont importés dans le controller crée par la commande. Elles peuvent être surchargées en utilisant les mêmes méthodes. Cependant attention, si vous souhaitez utiliser le mot clé `this`, reprenez la même syntaxe d'écriture pour créer les méthodes.
 
 ## Avenir du projet
 
@@ -148,7 +81,6 @@ Dans l'optique où, je souhaite ouvrir à la contribution, je veux m'assurer que
 - Il manque encore pas mal d'options possibles
   - Fichier de configuration
   - Possibilité d'ajout de typescript
-  - Autre librairie de bdd (ex: mongo)
 
 Je vais profiter de ce mois de spécialisation pour réfléchir aux améliorations potentiels. Je veux en profiter pour renforcer mes connaissances acquises pour éviter trop de refactorisation par la suite.
 

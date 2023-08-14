@@ -42,24 +42,8 @@ const fileHelper = {
      */
     createIndex: function (template, model){
         const content = fileHelper.content(template, model);
-        fs.writeFileSync('./index.js', content);
+        fs.writeFileSync('./server.js', content);
         displayHelper.fileCreated(filesEnum.index, 'index.js', 'the root of the project');
-    },
-
-    /**
-     * Create a model with some parameters inside the models directory of the application.
-     * @param {Object} model Information needed to create the file
-     */
-    createModel: function(model){
-        const content = fileHelper.content('sequelize/modelTemplate', model);
-        const modelDirectory = pathHelpers.getDirectory('models');
-
-        if(modelDirectory){
-            fs.writeFileSync(`${ modelDirectory }/${model.modelName}.js`, content);
-            displayHelper.fileCreated(filesEnum.model, model.modelName, modelDirectory);
-        } else {
-            displayHelper.errorDirectory(['./app/models', './src/models']);
-        }
     },
 
     /**
@@ -84,22 +68,6 @@ const fileHelper = {
 
         fs.writeFileSync(`${ controllerDirectory }/${model.modelName}.js`, content);
         displayHelper.fileCreated(filesEnum.controller, model.modelName, controllerDirectory);
-    },
-
-    /**
-     * Create the service between sequelize and the requested database from the user inside the services directory.
-     * @param {String} db The database requested
-     */
-    createConnect: function(db){
-        const content = fileHelper.content('sequelize/connect', { db });
-
-        const servicesDirectory = pathHelpers.getDirectory('services', true);
-
-        fs.appendFileSync('./.env', `\n${db.toUpperCase()}_URL=postgres://user:password@localhost/database`);
-        fs.appendFileSync('./.env.example', `\n${db.toUpperCase()}_URL=postgres://user:password@localhost/database`);
-
-        fs.writeFileSync(`${servicesDirectory}/dbConnectService.js`, content);
-        displayHelper.fileCreated(filesEnum.helper, 'dbConnectService', servicesDirectory);
     },
 
     /**

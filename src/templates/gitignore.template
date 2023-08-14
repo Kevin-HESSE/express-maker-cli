@@ -1,2 +1,6 @@
 node_modules
 .env
+
+# Ignore config directory from IDE
+.idea
+.vscode
