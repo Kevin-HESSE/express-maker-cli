@@ -45,8 +45,9 @@ async function initCommand(){
   fileHelper.createRouter({ modelName: 'main.router' });
   fileHelper.createController({ modelName: 'mainController', isApiRest: userConfig.isApiRest });
 
-  displayHelper.advice(`Don't forget to run this command`, npm)
   displayHelper.advice(`Initialize your project for git if not`, `git init`);
+  displayHelper.advice(`Initialize npm within your project`, `npm init`);
+  displayHelper.advice(`Don't forget to run this command`, npm);
 }
 
 module.exports = initCommand;

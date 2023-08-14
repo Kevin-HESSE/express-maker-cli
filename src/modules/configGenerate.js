@@ -8,7 +8,7 @@ const config = {
       new Question.select('appDirectory', 'The name of your application directory :', app),
       new Question.toggle('hasViewEngine', 'Do you intend to use a view engine ?'),
       new Question.toggle('isApiRest', 'Do you intend to use your server as an ApiREST ?'),
-      new Question.number('port', 'What port do you want to use ?', 3000)
+      new Question.number('port', 'What port do you want to use ? (default value 3000)', 3000)
     ];
     return await promptTerminal(askCustomConfig);
   },
