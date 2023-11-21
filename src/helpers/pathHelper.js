@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const directoryHelper = require('./directoryHelper');
+const directoryEnum = require('../enum/directoryEnum');
 
 /**
  * pathHelpers contains all methods which check if some directory exists or not
@@ -15,12 +16,10 @@ const pathHelpers = {
    * @returns {String | null} Return the application directory or null
    */
   getAppDirectory: function(){
-    if(fs.existsSync('./app')){
-      return './app';
-    } else if(fs.existsSync('./src')) {
-      return './src';
+    if(fs.existsSync(`./${directoryEnum.main}`)) {
+      return `./${directoryEnum.main}`;
     } else {
-      return null;
+      throw new Error('The src directory does not exist !');
     }
   },
 
@@ -29,17 +28,14 @@ const pathHelpers = {
    * @param {String} targetDirectory The directory to verify
    * @returns {String || null} The path to the specified directory or null
    */
-  getDirectory: function(targetDirectory, create=false){
+  getDirectory: function(targetDirectory){
     const appDirectory = pathHelpers.getAppDirectory();
     const directory = `${appDirectory}/${targetDirectory}`;
     
     if(appDirectory && fs.existsSync(directory)) {
       return directory;
-    } else if(create){
-      directoryHelper.create(directory);
-      return directory;
     } else {
-      return null;
+      throw new Error(`The ${targetDirectory} directory does not exist !`);
     }
   },
 

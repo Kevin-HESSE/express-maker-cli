@@ -6,91 +6,131 @@ const pathHelpers = require('./pathHelper');
 const formatContent = require('./beautifyHelper');
 const displayHelper = require('./displayHelper');
 const filesEnum = require('../enum/fileEnum');
+const directoryEnum = require('../enum/directoryEnum');
+
+/**
+ * @typedef ConfigurationProperty
+ * @type {object}
+ * @property {boolean} hasViewEngine - Set the functionality to allow Express using template engine.
+ * @property {boolean} isApiRest - Set the functionality to allow Express acting as an API Rest
+ * @property {boolean} useTypescript - Enable, change all default js file to ts file.
+ * @property {number} port - Define the default port used by the application
+ */
+
+/**
+ * Generate and compile the content of a file with some variables.
+ * @param {String} template The name of the template to copy
+ * @param {Object} model Information needed to create the file
+ * @returns {String}
+ */
+function generateContent(template, model) {
+    const templateDirectory = pathHelpers.getTemplateDirectory()
+    const file = path.resolve(templateDirectory, `${template}.js`);
+
+    const fileRead = fs.readFileSync(file).toString();
+
+    let content = _.template(fileRead)(model);
+
+    return formatContent(content);
+}
+
+/**
+ * Return the correct extension.
+ * @param {boolean} isTypeScript
+ * @returns {string}
+ */
+function getFileExtension(isTypeScript) {
+    return isTypeScript ? 'ts' : 'js';
+}
+
+/**
+ * If the file doesn't exist, it creates it.
+ * @param {string} fileType
+ * @param {string} fileName
+ * @param {ConfigurationProperty} userConfig
+ */
+function createFile(fileType, fileName, userConfig) {
+    const extension = getFileExtension(userConfig.useTypescript);
+    let fileDirectory;
+
+    try {
+        fileDirectory = pathHelpers.getDirectory(directoryEnum[fileType]);
+    } catch (error) {
+        displayHelper.errorMessage(error.message);
+    }
+
+    if(fs.existsSync(`${ fileDirectory }/${fileName}.${extension}`)){
+        displayHelper.warning(filesEnum[fileType], `${fileName}.${extension}`);
+        return;
+    }
+
+    const content = generateContent('router/template.router', userConfig);
+    fs.writeFileSync(`${ fileDirectory }/${fileName}.${extension}`, content);
+    displayHelper.fileCreated(filesEnum[fileType], `${fileName}.${extension}`, fileDirectory);
+}
 
 /**
  * A list of method related to manipulate files
- * @method content create the content for a new file
  * @method createIndex
- * @method createModel
  * @method createRouter
  * @method createController
- * @method copyEnv
- * @method copyGitIgnore
+ * @method copyFile
  */
 const fileHelper = {
     /**
-     * Generate and compile the content of a file with some variables.
-     * @param {String} template The name of the template to copy
-     * @param {Object} model Information needed to create the file
-     * @returns {String}
-     */
-    content: function (template, model){
-        const templateDirectory = pathHelpers.getTemplateDirectory()
-        const file = path.resolve(templateDirectory, `${template}.js`);
-        
-        const fileRead = fs.readFileSync(file).toString();
-
-        let content = _.template(fileRead)(model);
-
-        return formatContent(content);
-    },
-
-    /**
      * Create an `index.js` file with basic setup
      * @param {String} template The name of the template to copy
-     * @param {Object} model Information needed to create the file
+     * @param {ConfigurationProperty} userConfig Information needed to create the file
      */
-    createIndex: function (template, model){
-        const content = fileHelper.content(template, model);
-        fs.writeFileSync('./server.js', content);
-        displayHelper.fileCreated(filesEnum.index, 'index.js', 'the root of the project');
+    createIndex: function (template, userConfig){
+        const extension = getFileExtension(userConfig.useTypescript);
+
+        if(fs.existsSync(`./server.${extension}`)){
+            displayHelper.warning(filesEnum.index, `server.${extension}`);
+            return;
+        }
+
+        const content = generateContent(template, userConfig);
+
+        fs.writeFileSync(`./server.${extension}`, content);
+        displayHelper.fileCreated(filesEnum.index, `server.${extension}`, 'the root of the project');
     },
 
     /**
      * Create a router with some parameters inside the routers directory of the application.
-     * @param {Object} model Information needed to create the file
+     * @param {string} fileName The name of the file created
+     * @param {ConfigurationProperty} userConfig Information needed to create the file
      */
-    createRouter: function(model){
-        const content = fileHelper.content('router/template.router', model);
-        const routerDirectory = pathHelpers.getDirectory('routers');
-
-        fs.writeFileSync(`${ routerDirectory }/${model.modelName}.js`, content);
-        displayHelper.fileCreated(filesEnum.router, model.modelName, routerDirectory);
+    createRouter: function(fileName, userConfig){
+        createFile('router', fileName, userConfig);
     },
     
     /**
      * Create a controller with some parameters inside the controllers directory of the application.
-     * @param {Object} model Information needed to create the file
+     * @param {string} fileName The name of the file created
+     * @param {ConfigurationProperty} userConfig Information needed to create the file
      */
-    createController: function(model){
-        const content = fileHelper.content('controller/templateController', model);
-        const controllerDirectory = pathHelpers.getDirectory('controllers');
-
-        fs.writeFileSync(`${ controllerDirectory }/${model.modelName}.js`, content);
-        displayHelper.fileCreated(filesEnum.controller, model.modelName, controllerDirectory);
+    createController: function(fileName, userConfig){
+        createFile('controller', fileName, userConfig);
     },
 
     /**
-     * Copy an `.env` and a `.env.example` file at the root of the project.
+     * Copy a template file in the root of the project.
+     * @param {string} templateFile Represent the template name to copy
+     * @param {string} targetFileName Represent the name of the copied file.
      */
-    copyEnv: function(){
-        const templateDirectory = pathHelpers.getTemplateDirectory();
-        const envFile = path.resolve(templateDirectory, `env.template`);
-        fs.copyFileSync(envFile, './.env');
-        fs.copyFileSync(envFile, './.env.example');
-    },
+    copyFile: function (templateFile, targetFileName) {
+        if(fs.existsSync(`.${targetFileName}`)){
+            displayHelper.warning(filesEnum.configuration, `.${targetFileName}`);
+            return;
+        }
 
-    modifyEnv: function(){
-        //Todo
-    },
-
-    /**
-     * Copy an `.gitignore` file at the root of the project.
-     */
-    copyGitIgnore: function(){
         const templateDirectory = pathHelpers.getTemplateDirectory();
-        const gitIgnoreFile = path.resolve(templateDirectory, `gitignore.template`);
-        fs.copyFileSync(gitIgnoreFile, './.gitignore');
+        const file = path.resolve(templateDirectory, `${templateFile}.template`);
+
+        fs.copyFileSync(file, `./.${targetFileName}`);
+        displayHelper.fileCreated(filesEnum.configuration, `.${targetFileName}`, 'the root of the project');
     }
 }
+
 module.exports = fileHelper;

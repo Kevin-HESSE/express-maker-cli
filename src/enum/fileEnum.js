@@ -3,7 +3,8 @@ const filesEnum = {
   helper: 'Helper',
   router: 'Router',
   model: 'Model',
-  index: 'Index'
+  index: 'Index',
+  configuration: 'Configuration'
 };
 
 module.exports = filesEnum;

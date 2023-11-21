@@ -1,10 +1,18 @@
-require('dotenv').config();
+<% if(useTypescript) { %>
+  import 'dotenv/config';
+  import express from 'express';
+  <% if(isApiRest) { %> import cors from 'cors' <% } %>
 
-const express = require('express');
+  import { mainRouter } from './src/routers/main.router';
+<% } else { %>
+  require('dotenv').config();
+  const express = require('express');
+  <% if(isApiRest) { %> const cors = require('cors') <% } %>
+
+  const mainRouter = require('./src/routers/main.router');
+<% } %>
+
 const app = express();
-<% if(isApiRest) { %> const cors = require('cors') <% } %>
-
-const mainRouter = require('./<%= appDirectory %>/routers/main.router');
 
 const PORT = process.env.PORT || <%= port %>;
 

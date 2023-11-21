@@ -1,5 +1,3 @@
-const types = require("../enum/typesEnum");
-
 const validator = {
   /**
    * This function compare a string in parameter and verify if it is correct.

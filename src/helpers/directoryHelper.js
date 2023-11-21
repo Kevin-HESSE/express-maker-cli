@@ -14,10 +14,6 @@ const directoryHelper = {
       fs.mkdirSync(directory, {mode: 0755});
     }
   },
-  read: function(directory){
-    const directories = fs.readdirSync(directory);
-    return directories.filter(file => file !== 'index.js');
-  }
 };
 
 module.exports = directoryHelper;

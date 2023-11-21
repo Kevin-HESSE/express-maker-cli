@@ -1,6 +1,6 @@
 {
   "name": "express-maker-cli",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "main": "app.js",
   "directories": {
     "doc": "docs"
