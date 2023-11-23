@@ -2,6 +2,9 @@
   "name": "@khesse-project/express-maker-cli",
   "version": "1.0.0",
   "main": "./build/app.js",
+  "files": [
+    "build/**/*"
+  ],
   "directories": {
     "doc": "docs"
   },
@@ -16,14 +19,11 @@
     "build": "rm -rf ./build/* && tsc && cp -r ./src/templates ./build/templates",
     "dev": "ts-node ./src/app.ts init"
   },
-  "files": [
-    "build/**/*"
-  ],
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bin": {
-    "express-maker": "./build/app.js"
+    "express-maker-cli": "build/app.js"
   },
   "description": "",
   "devDependencies": {

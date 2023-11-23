@@ -49,8 +49,6 @@ export async function initCommand() : Promise<void> {
     devDependencies.push('@types/cors');
   }
 
-  console.log(userConfig);
-
   directoryHelper.create(`./${folderEnum.main}`);
   directoryHelper.create(`./${folderEnum.main}/${folderEnum.model}`);
   directoryHelper.create(`./${folderEnum.main}/${folderEnum.router}`);
