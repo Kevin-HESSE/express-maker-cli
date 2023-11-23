@@ -1,4 +1,6 @@
-const filesEnum = {
+type FileEnum<T extends string> = { [name in T]: string }
+
+export const filesEnum: FileEnum<string> = {
   controller: 'Controller',
   helper: 'Helper',
   router: 'Router',
@@ -6,5 +8,3 @@ const filesEnum = {
   index: 'Index',
   configuration: 'Configuration'
 };
-
-module.exports = filesEnum;

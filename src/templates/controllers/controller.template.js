@@ -7,7 +7,7 @@ const mainController = {
 }
 
 <% if (useTypescript) { %>
-export { mainController };
-  <% } else { %>
+  export { mainController };
+<% } else { %>
   module.exports = mainController;
-  <% } %>
+<% } %>

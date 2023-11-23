@@ -14,7 +14,7 @@
 
 const app = express();
 
-const PORT = process.env.PORT || <%= port %>;
+const PORT = process.env.PORT || <%= defaultPort %>;
 
 <% if(hasViewEngine){ %> app.set('view engine', 'ejs'); 
 app.set('views', 'views'); 

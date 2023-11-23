@@ -1,12 +1,12 @@
-const { exit } = require('process');
+import { exit } from 'process';
 
 /**
  * Abort the programm when the command `ctrl + c` as been invoked.
- * @param {*} prompt 
  */
-function exitCommand(prompt){
+export function exitCommand(): void{
   console.log(`Aborting action !`);
   exit(1);
 }
 
-module.exports = exitCommand;
+export default class onCancel {
+}
