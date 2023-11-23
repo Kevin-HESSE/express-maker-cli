@@ -1,6 +1,6 @@
 {
   "name": "@khesse-project/express-maker-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./build/app.js",
   "files": [
     "build/**/*"
