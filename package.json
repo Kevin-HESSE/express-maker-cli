@@ -1,7 +1,7 @@
 {
-  "name": "express-maker-cli",
-  "version": "0.9.0",
-  "main": "app.js",
+  "name": "@khesse-project/express-maker-cli",
+  "version": "1.0.0",
+  "main": "./build/app.js",
   "directories": {
     "doc": "docs"
   },
@@ -13,13 +13,24 @@
     "prompts": "^2.4.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rm -rf ./build/* && tsc && cp -r ./src/templates ./build/templates",
+    "dev": "ts-node ./src/app.ts init"
   },
+  "files": [
+    "build/**/*"
+  ],
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bin": {
-    "express-maker": "app.js"
+    "express-maker": "./build/app.js"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/js-beautify": "^1.14.3",
+    "@types/lodash": "^4.14.202",
+    "@types/prompts": "^2.4.9",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
+  }
 }

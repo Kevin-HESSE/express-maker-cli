@@ -1,19 +1,17 @@
-const fs = require('fs');
+import fs from 'fs';
 
 /**
  * A list of method related to directory
  * @method create
  */
-const directoryHelper = {
+export const directoryHelper = {
   /**
    * Verify if the directory exists, if not create it with permission 0755
    * @param {String} directory THe name of the directory
    */
-  create: function(directory) {
+  create: function(directory: string): void {
     if(!fs.existsSync(directory)){
-      fs.mkdirSync(directory, {mode: 0755});
+      fs.mkdirSync(directory, {mode: 0o755 });
     }
   },
 };
-
-module.exports = directoryHelper;

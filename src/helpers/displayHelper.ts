@@ -1,6 +1,5 @@
-const kleur = require( 'kleur' );
-const _ = require( 'lodash' );
-const { exit } = require('process');
+import kleur from 'kleur';
+import { exit } from 'process';
 
 /**
  * A list of method for displaying message in the terminal with the module kleur
@@ -9,14 +8,14 @@ const { exit } = require('process');
  * @method warning
  * @method errorMessage
  */
-const displayHelper = {
+export const displayHelper = {
 
   /**
    * Convert a message with kleur.
    * @param {String} message The message to display
    * @returns A formatted message with kleur
    */
-  prompt: function ( message ) {
+  prompt: function ( message: string ) {
     return kleur.cyan().underline( message );
   },
   /**
@@ -25,7 +24,7 @@ const displayHelper = {
    * @param {String} fileName The name of the file
    * @param {String} fileDirectory The directory of the file
    */
-  fileCreated: function ( fileType, fileName, fileDirectory ) {
+  fileCreated: function ( fileType: string, fileName: string, fileDirectory: string ) {
     console.log( `${ kleur.underline( fileType ) } : ${ kleur.green( fileName ) } has been created in ${ kleur.green( fileDirectory ) }` );
   },
 
@@ -34,7 +33,7 @@ const displayHelper = {
    * @param {String} message The message to print
    * @param {String} command The command to run
    */
-  advice: function ( message, command ) {
+  advice: function ( message: string, command: string ) {
     console.log( `${ message } : ${ kleur.green().bold( command ) }` );
   },
 
@@ -43,7 +42,7 @@ const displayHelper = {
    * @param {String} fileType The type of the file
    * @param {String} fileName The name of the file
    */
-  warning: function ( fileType, fileName ) {
+  warning: function ( fileType: string, fileName: string ) {
     console.log( `${ kleur.underline( fileType ) } : ${ kleur.yellow( fileName ) } already exists` );
   },
 
@@ -51,10 +50,8 @@ const displayHelper = {
    * Display an error message when something goes wrong.
    * @param {String} message The message to display
    */
-  errorMessage: function ( message ) {
+  errorMessage: function ( message: string ) {
     console.log( kleur.red( message ) );
     exit(1);
   },
 };
-
-module.exports = displayHelper;
