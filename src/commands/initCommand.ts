@@ -7,7 +7,7 @@
 // import displayHelper from '../helpers/displayHelper';
 // import directoryEnum from '../enum/directoryEnum';
 
-import { configGenerate } from '../modules/configGenerate';
+import { questionGenerator } from '../modules/configGenerate';
 import { UserAnswers } from '../interface/UserConfiguration';
 import { directoryHelper } from '../helpers/directoryHelper';
 import { folderEnum } from '../enum/FolderEnum';
@@ -25,7 +25,7 @@ import { fileHelper } from '../helpers/fileHelper';
  * - `./server.js`
  */
 export async function initCommand() : Promise<void> {
-  const userConfig: UserAnswers = await configGenerate();
+  const userConfig: UserAnswers = await questionGenerator.initConfig();
 
   const dependencies: string[] = ['express', 'dotenv']
   const devDependencies: string[] = ['nodemon']
