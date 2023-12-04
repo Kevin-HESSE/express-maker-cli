@@ -5,8 +5,6 @@ import { filesEnum } from '../../enum/FileEnum';
 import { fileHelper } from '../fileHelper';
 import { displayHelper } from '../displayHelper';
 import { formatContent } from '../beautifyHelper';
-import { pathHelpers } from '../pathHelper';
-import { directoryHelper } from '../directoryHelper';
 
 jest.mock('fs');
 jest.mock('console');
@@ -60,6 +58,22 @@ mainRouter.get('/', mainController.home);
   export { mainRouter };
 <% } else { %>
   module.exports = mainRouter;
+<% } %>
+`;
+
+const controllerContent = `
+<% if (useTypescript) { %>import { Request, Response } from 'express';  <% } %>
+
+const mainController = {
+  home: function(request<% if (useTypescript) { %>: Request <% } %>, response<% if (useTypescript) { %>: Response <% } %>){
+    <% if(isApiRest) { %> response.json(\`It's alive !\`); <% } else { %>response.send(\`It's alive !\`); <% } %>
+  }
+}
+
+<% if (useTypescript) { %>
+  export { mainController };
+<% } else { %>
+  module.exports = mainController;
 <% } %>
 `;
 
@@ -323,5 +337,96 @@ export { mainRouter };\n`);
     expect(writingMock).toHaveBeenCalledWith('./src/routers/main.router.ts', contentExpected);
     expect(successMock).toHaveBeenCalledTimes(1)
     expect(successMock).toHaveBeenCalledWith(filesEnum.router, 'main.router.ts', './src/routers');
+  })
+})
+
+describe('Test the creation of the controller file from fileHelper', () => {
+  const userConfiguration: UserConfiguration = {
+    hasViewEngine: false,
+    isApiRest: false,
+    useTypescript: false,
+    defaultPort: 3000,
+  };
+
+  beforeEach(() => {
+    userConfiguration.useTypescript = false;
+    jest.mocked(fs.readFileSync).mockReturnValue(controllerContent);
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('display an error because the controller directory does not exist', () => {
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => true) // Check the src directory exist
+      .mockImplementationOnce(() => false) // Check the router directory exist
+      .mockImplementationOnce(() => false) // Check the file exist
+
+    fileHelper.createController('mainController', userConfiguration);
+
+    expect(errorMock).toHaveBeenCalledTimes(1);
+    expect(errorMock).toHaveBeenCalledWith('The controllers directory does not exist !');
+  })
+
+  it('display a warning when the controller file exist', () => {
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => true) // Check the src directory exist
+      .mockImplementationOnce(() => true) // Check the router directory exist
+      .mockImplementationOnce(() => true) // Check the file exist
+
+    fileHelper.createController('mainController', userConfiguration);
+
+    expect(warningMock).toHaveBeenCalledTimes(1);
+    expect(warningMock).toHaveBeenCalledWith(filesEnum.controller, 'mainController.js');
+    expect(writingMock).toHaveBeenCalledTimes(0);
+  })
+
+  it('create a controller file for javascript environment', () => {
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => true) // Check the src directory exist
+      .mockImplementationOnce(() => true) // Check the router directory exist
+      .mockImplementationOnce(() => false) // Check the file exist
+
+    fileHelper.createController('mainController', userConfiguration);
+
+    const contentExpected = formatContent(`const mainController = {
+  home: function(request, response){
+    response.send(\`It's alive !\`);
+  }
+}
+
+module.exports = mainController;\n`);
+
+    expect(writingMock).toHaveBeenCalledTimes(1)
+    expect(writingMock).toHaveBeenCalledWith('./src/controllers/mainController.js', contentExpected);
+    expect(successMock).toHaveBeenCalledTimes(1)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.controller, 'mainController.js', './src/controllers');
+  })
+
+  it('create a controller file for typescript environment', () => {
+    userConfiguration.useTypescript = true;
+
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => true) // Check the src directory exist
+      .mockImplementationOnce(() => true) // Check the router directory exist
+      .mockImplementationOnce(() => false) // Check the file exist
+
+    fileHelper.createController('mainController', userConfiguration);
+
+    const contentExpected = formatContent(`import { Request, Response } from 'express';
+
+const mainController = {
+  home: function(request: Request, response: Response){
+    response.send(\`It's alive !\`);
+  }
+}
+
+export { mainController };\n`);
+
+    expect(writingMock).toHaveBeenCalledTimes(1)
+    expect(writingMock).toHaveBeenCalledWith('./src/controllers/mainController.ts', contentExpected);
+    expect(successMock).toHaveBeenCalledTimes(1)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.controller, 'mainController.ts', './src/controllers');
   })
 })
