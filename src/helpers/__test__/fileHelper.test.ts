@@ -5,9 +5,17 @@ import { filesEnum } from '../../enum/FileEnum';
 import { fileHelper } from '../fileHelper';
 import { displayHelper } from '../displayHelper';
 import { formatContent } from '../beautifyHelper';
+import path from 'path';
 
 jest.mock('fs');
 jest.mock('console');
+
+const userConfiguration: UserConfiguration = {
+  hasViewEngine: false,
+  isApiRest: false,
+  useTypescript: false,
+  defaultPort: 3000,
+};
 
 const indexContent = `
 <% if(useTypescript) { %>
@@ -82,14 +90,7 @@ const successMock = jest.spyOn(displayHelper, 'fileCreated');
 const warningMock = jest.spyOn(displayHelper, 'warning');
 const errorMock = jest.spyOn(displayHelper, 'errorMessage');
 
-describe('Test the creation of the index file from fileHelper for javascript environment', () => {
-  const userConfiguration: UserConfiguration = {
-    hasViewEngine: false,
-    isApiRest: false,
-    useTypescript: false,
-    defaultPort: 3000,
-  };
-
+describe('Test the creation of the index file from fileHelper', () => {
   beforeEach(() => {
     userConfiguration.hasViewEngine = false;
     userConfiguration.isApiRest = false;
@@ -250,13 +251,6 @@ app.listen(PORT, () => {
 });
 
 describe('Test the creation of the router file from fileHelper', () => {
-  const userConfiguration: UserConfiguration = {
-    hasViewEngine: false,
-    isApiRest: false,
-    useTypescript: false,
-    defaultPort: 3000,
-  };
-
   beforeEach(() => {
     userConfiguration.useTypescript = false;
     jest.mocked(fs.readFileSync).mockReturnValue(routerContent);
@@ -341,14 +335,9 @@ export { mainRouter };\n`);
 })
 
 describe('Test the creation of the controller file from fileHelper', () => {
-  const userConfiguration: UserConfiguration = {
-    hasViewEngine: false,
-    isApiRest: false,
-    useTypescript: false,
-    defaultPort: 3000,
-  };
-
   beforeEach(() => {
+    userConfiguration.hasViewEngine = false;
+    userConfiguration.isApiRest = false;
     userConfiguration.useTypescript = false;
     jest.mocked(fs.readFileSync).mockReturnValue(controllerContent);
   })
@@ -382,7 +371,7 @@ describe('Test the creation of the controller file from fileHelper', () => {
     expect(writingMock).toHaveBeenCalledTimes(0);
   })
 
-  it('create a controller file for javascript environment', () => {
+  it('create a controller file with no option for javascript environment', () => {
     jest.mocked(fs.existsSync)
       .mockImplementationOnce(() => true) // Check the src directory exist
       .mockImplementationOnce(() => true) // Check the router directory exist
@@ -404,7 +393,31 @@ module.exports = mainController;\n`);
     expect(successMock).toHaveBeenCalledWith(filesEnum.controller, 'mainController.js', './src/controllers');
   })
 
-  it('create a controller file for typescript environment', () => {
+  it('create a controller file with all options for javascript environment', () => {
+    userConfiguration.isApiRest = true;
+
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => true) // Check the src directory exist
+      .mockImplementationOnce(() => true) // Check the router directory exist
+      .mockImplementationOnce(() => false) // Check the file exist
+
+    fileHelper.createController('mainController', userConfiguration);
+
+    const contentExpected = formatContent(`const mainController = {
+  home: function(request, response){
+    response.json(\`It's alive !\`);
+  }
+}
+
+module.exports = mainController;\n`);
+
+    expect(writingMock).toHaveBeenCalledTimes(1)
+    expect(writingMock).toHaveBeenCalledWith('./src/controllers/mainController.js', contentExpected);
+    expect(successMock).toHaveBeenCalledTimes(1)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.controller, 'mainController.js', './src/controllers');
+  })
+
+  it('create a controller file with no option for typescript environment', () => {
     userConfiguration.useTypescript = true;
 
     jest.mocked(fs.existsSync)
@@ -428,5 +441,62 @@ export { mainController };\n`);
     expect(writingMock).toHaveBeenCalledWith('./src/controllers/mainController.ts', contentExpected);
     expect(successMock).toHaveBeenCalledTimes(1)
     expect(successMock).toHaveBeenCalledWith(filesEnum.controller, 'mainController.ts', './src/controllers');
+  })
+
+  it('create a controller file with all options for typescript environment', () => {
+    userConfiguration.isApiRest = true;
+    userConfiguration.useTypescript = true;
+
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => true) // Check the src directory exist
+      .mockImplementationOnce(() => true) // Check the router directory exist
+      .mockImplementationOnce(() => false) // Check the file exist
+
+    fileHelper.createController('mainController', userConfiguration);
+
+    const contentExpected = formatContent(`import { Request, Response } from 'express';
+
+const mainController = {
+  home: function(request: Request, response: Response){
+    response.json(\`It's alive !\`);
+  }
+}
+
+export { mainController };\n`);
+
+    expect(writingMock).toHaveBeenCalledTimes(1)
+    expect(writingMock).toHaveBeenCalledWith('./src/controllers/mainController.ts', contentExpected);
+    expect(successMock).toHaveBeenCalledTimes(1)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.controller, 'mainController.ts', './src/controllers');
+  })
+})
+
+describe('Test the copy method from fileHelper', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('display a warning when the file to copy exist', () => {
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => true) // Check if the file exists
+
+    fileHelper.copyFile('env', 'env');
+
+    expect(warningMock).toHaveBeenCalledTimes(1);
+    expect(warningMock).toHaveBeenCalledWith(filesEnum.configuration, '.env');
+    expect(writingMock).toHaveBeenCalledTimes(0);
+  })
+
+  it('copy the file', () => {
+    jest.mocked(fs.existsSync)
+      .mockImplementationOnce(() => false) // Check if the file exists
+
+    const copyMock = jest.spyOn(fs, 'copyFileSync');
+    fileHelper.copyFile('env', 'env');
+
+    expect(copyMock).toHaveBeenCalledTimes(1);
+    expect(copyMock).toHaveBeenCalledWith(path.resolve(__dirname, `../../templates/env.template`), './.env');
+    expect(successMock).toHaveBeenCalledTimes(1);
+    expect(successMock).toHaveBeenCalledWith(filesEnum.configuration, '.env', 'the root of the project');
   })
 })
