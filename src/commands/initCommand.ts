@@ -64,7 +64,7 @@ export async function initCommand() : Promise<void> {
 
   const dependenciesInstruction = `npm install ${dependencies.join(' ')}`;
   const devDependenciesInstruction = `npm install --save-dev ${devDependencies.join(' ')}`;
-  //
+
   displayHelper.advice(`\nDon't forget to install your main dependencies with this command`, dependenciesInstruction);
   displayHelper.advice(`Don't forget to install your dev dependencies with this command`, devDependenciesInstruction);
 }
