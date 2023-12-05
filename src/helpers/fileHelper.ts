@@ -72,21 +72,28 @@ function createFile(fileType: string, templateName: string, fileName: string, us
 export const fileHelper = {
     /**
      * Create an `index.js` file with basic setup
-     * @param {String} template The name of the template to copy
      * @param {UserConfiguration} userConfig Information needed to create the file
      */
-    createIndex: function (template: string, userConfig: UserConfiguration){
+    createIndex: function (userConfig: UserConfiguration){
         const extension = getFileExtension(userConfig.useTypescript);
 
-        if(fs.existsSync(`./server.${extension}`)){
+        if(fs.existsSync(`./${folderEnum.main}/server.${extension}`)){
             displayHelper.warning(filesEnum.index, `server.${extension}`);
             return;
+        } else {
+            const serverContent = generateContent('server', userConfig);
+            fs.writeFileSync(`./${folderEnum.main}/server.${extension}`, serverContent);
+            displayHelper.fileCreated(filesEnum.index, `server.${extension}`, 'the src directory');
         }
 
-        const content = generateContent(template, userConfig);
-
-        fs.writeFileSync(`./server.${extension}`, content);
-        displayHelper.fileCreated(filesEnum.index, `server.${extension}`, 'the root of the project');
+        if(fs.existsSync(`./index.${extension}`)){
+            displayHelper.warning(filesEnum.index, `index.${extension}`);
+            return;
+        } else {
+            const indexContent = generateContent('index', userConfig)
+            fs.writeFileSync(`./index.${extension}`, indexContent);
+            displayHelper.fileCreated(filesEnum.index, `index.${extension}`, 'the root of the project');
+        }
     },
 
     /**

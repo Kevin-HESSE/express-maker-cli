@@ -81,7 +81,7 @@ export async function initCommand(): Promise<void> {
   fileHelper.copyFile('env', 'env');
   fileHelper.copyFile('env', 'env.example');
   fileHelper.copyFile('gitignore', 'gitignore');
-  fileHelper.createIndex('index', userConfig);
+  fileHelper.createIndex(userConfig);
   fileHelper.createRouter('main.router', userConfig);
   fileHelper.createController('mainController', userConfig);
 

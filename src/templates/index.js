@@ -1,30 +1,17 @@
-<% if(useTypescript) { %>
-  import 'dotenv/config';
-  import express from 'express';
-  <% if(isApiRest) { %> import cors from 'cors' <% } %>
-
-  import { mainRouter } from './src/routers/main.router';
-<% } else { %>
+<% if (useTypescript) { %>
+import 'dotenv/config';
+import { app } from './src/server';
+  <% } else { %>
   require('dotenv').config();
-  const express = require('express');
-  <% if(isApiRest) { %> const cors = require('cors') <% } %>
+  const app = require('./src/server');
+  <% } %>
 
-  const mainRouter = require('./src/routers/main.router');
-<% } %>
+function start() {
+  const PORT = process.env.PORT || <%= defaultPort %>;
 
-const app = express();
+  app.listen(PORT, () => {
+    console.log('The server is running on : http://localhost:'+ PORT);
+  });
+}
 
-const PORT = process.env.PORT || <%= defaultPort %>;
-
-<% if(hasViewEngine){ %> app.set('view engine', 'ejs'); 
-app.set('views', 'views'); 
-
-app.use(express.static('public')); <% } %>
-
-<% if(isApiRest) { %>app.use(cors()); app.use(express.json()); <% } %>
-
-app.use(mainRouter);
-
-app.listen(PORT, () => {
-  console.log('The server is running on : http://localhost:'+ PORT);
-});
+start();

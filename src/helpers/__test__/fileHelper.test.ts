@@ -18,38 +18,83 @@ const userConfiguration: UserConfiguration = {
   packageManager: 'npm',
 };
 
-const indexContent = `
+const serverContent = `
 <% if(useTypescript) { %>
-  import 'dotenv/config';
-  import express from 'express';
+import express from 'express';
   <% if(isApiRest) { %> import cors from 'cors' <% } %>
 
-  import { mainRouter } from './src/routers/main.router';
-<% } else { %>
-  require('dotenv').config();
+import { mainRouter } from './routers/main.router';
+  <% } else { %>
   const express = require('express');
   <% if(isApiRest) { %> const cors = require('cors') <% } %>
 
-  const mainRouter = require('./src/routers/main.router');
-<% } %>
+  const mainRouter = require('./routers/main.router');
+  <% } %>
 
 const app = express();
 
-const PORT = process.env.PORT || <%= defaultPort %>;
+<% if(hasViewEngine){ %> app.set('view engine', 'ejs');
+  app.set('views', 'views');
 
-<% if(hasViewEngine){ %> app.set('view engine', 'ejs'); 
-app.set('views', 'views'); 
-
-app.use(express.static('public')); <% } %>
+  app.use(express.static('public')); <% } %>
 
 <% if(isApiRest) { %>app.use(cors()); app.use(express.json()); <% } %>
 
 app.use(mainRouter);
 
-app.listen(PORT, () => {
-  console.log('The server is running on : http://localhost:'+ PORT);
-});
+<% if (useTypescript) { %>
+export { app };
+  <% } else { %>
+  module.exports = app;
+  <% } %>
+
 `;
+
+const indexContent = `
+<% if (useTypescript) { %>
+import 'dotenv/config';
+import { app } from './src/server';
+  <% } else { %>
+  require('dotenv').config();
+  const app = require('./src/server');
+  <% } %>
+
+function start() {
+  const PORT = process.env.PORT || <%= defaultPort %>;
+    
+  app.listen(PORT, () => {
+    console.log('The server is running on : http://localhost:'+ PORT);
+  });
+}
+
+start();
+`;
+
+const indexContentExpectedInJavascript = formatContent(`require('dotenv').config();
+const app = require('./src/server');
+
+function start() {
+  const PORT = process.env.PORT || 3000;
+
+  app.listen(PORT, () => {
+    console.log('The server is running on : http://localhost:'+ PORT);
+  });
+}
+
+start();\n`);
+
+const indexContentExpectedInTypescript = formatContent(`import 'dotenv/config';
+import { app } from './src/server';
+
+function start() {
+  const PORT = process.env.PORT || 3000;
+
+  app.listen(PORT, () => {
+    console.log('The server is running on : http://localhost:'+ PORT);
+  });
+}
+
+start();\n`);
 
 const routerContent = `
 <% if (useTypescript) { %>
@@ -97,7 +142,10 @@ describe('Test the creation of the index file from fileHelper', () => {
     userConfiguration.isApiRest = false;
     userConfiguration.useTypescript = false;
 
-    jest.mocked(fs.readFileSync).mockReturnValue(indexContent);
+    jest.mocked(fs.readFileSync)
+      .mockReturnValueOnce(serverContent)
+      .mockReturnValueOnce(indexContent)
+    ;
   })
 
   afterEach(() => {
@@ -107,7 +155,7 @@ describe('Test the creation of the index file from fileHelper', () => {
   it('return a warning when the index file exist', () => {
     jest.mocked(fs.existsSync).mockReturnValue(true);
 
-    fileHelper.createIndex('index', userConfiguration);
+    fileHelper.createIndex(userConfiguration);
 
     expect(warningMock).toHaveBeenCalledTimes(1);
     expect(warningMock).toHaveBeenCalledWith(filesEnum.index, 'server.js');
@@ -118,27 +166,25 @@ describe('Test the creation of the index file from fileHelper', () => {
     const successMock = jest.spyOn(displayHelper, 'fileCreated');
     jest.mocked(fs.existsSync).mockReturnValue(false);
 
-    fileHelper.createIndex('index', userConfiguration)
+    fileHelper.createIndex(userConfiguration)
 
-    const contentExpected = formatContent(`require('dotenv').config();
-const express = require('express');
+    const serverContentExpected = formatContent(`const express = require('express');
 
-const mainRouter = require('./src/routers/main.router');
+const mainRouter = require('./routers/main.router');
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-
 app.use(mainRouter);
 
-app.listen(PORT, () => {
-  console.log('The server is running on : http://localhost:'+ PORT);
-});\n`);
+module.exports = app;\n`);
 
-    expect(writingMock).toHaveBeenCalledTimes(1)
-    expect(writingMock).toHaveBeenCalledWith('./server.js', contentExpected);
-    expect(successMock).toHaveBeenCalledTimes(1)
-    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.js', 'the root of the project');
+
+    expect(writingMock).toHaveBeenCalledTimes(2)
+    expect(writingMock).toHaveBeenCalledWith('./src/server.js', serverContentExpected);
+    expect(writingMock).toHaveBeenCalledWith('./index.js', indexContentExpectedInJavascript);
+
+    expect(successMock).toHaveBeenCalledTimes(2)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.js', 'the src directory');
   })
 
   it('create an index file with all options for javascript environment', () => {
@@ -147,17 +193,14 @@ app.listen(PORT, () => {
 
     jest.mocked(fs.existsSync).mockReturnValue(false);
 
-    fileHelper.createIndex('index', userConfiguration)
+    fileHelper.createIndex(userConfiguration)
 
-    const contentExpected = formatContent(`require('dotenv').config();
-const express = require('express');
+    const serverContentExpected = formatContent(`const express = require('express');
 const cors = require('cors')
 
-const mainRouter = require('./src/routers/main.router');
+const mainRouter = require('./routers/main.router');
 
 const app = express();
-
-const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -168,14 +211,15 @@ app.use(cors()); app.use(express.json());
 
 app.use(mainRouter);
 
-app.listen(PORT, () => {
-  console.log('The server is running on : http://localhost:'+ PORT);
-});\n`);
+module.exports = app;\n`);
 
-    expect(writingMock).toHaveBeenCalledTimes(1)
-    expect(writingMock).toHaveBeenCalledWith('./server.js', contentExpected);
-    expect(successMock).toHaveBeenCalledTimes(1)
-    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.js', 'the root of the project');
+    expect(writingMock).toHaveBeenCalledTimes(2)
+    expect(writingMock).toHaveBeenCalledWith('./src/server.js', serverContentExpected);
+    expect(writingMock).toHaveBeenCalledWith('./index.js', indexContentExpectedInJavascript);
+
+    expect(successMock).toHaveBeenCalledTimes(2)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.js', 'the src directory');
+    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'index.js', 'the root of the project');
   })
 
   it('create an index file with no option for typescript environment', () => {
@@ -183,29 +227,27 @@ app.listen(PORT, () => {
 
     jest.mocked(fs.existsSync).mockReturnValue(false);
 
-    fileHelper.createIndex('index', userConfiguration)
+    fileHelper.createIndex(userConfiguration)
 
-    const contentExpected = formatContent(`import 'dotenv/config';
-import express from 'express';
+    const serverContentExpected = formatContent(`import express from 'express';
 
 import { 
   mainRouter
-} from './src/routers/main.router';
+} from './routers/main.router';
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-
 app.use(mainRouter);
 
-app.listen(PORT, () => {
-  console.log('The server is running on : http://localhost:'+ PORT);
-});\n`);
+export { app };\n`);
 
-    expect(writingMock).toHaveBeenCalledTimes(1)
-    expect(writingMock).toHaveBeenCalledWith('./server.ts', contentExpected);
-    expect(successMock).toHaveBeenCalledTimes(1)
-    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.ts', 'the root of the project');
+    expect(writingMock).toHaveBeenCalledTimes(2)
+    expect(writingMock).toHaveBeenCalledWith('./src/server.ts', serverContentExpected);
+    expect(writingMock).toHaveBeenCalledWith('./index.ts', indexContentExpectedInTypescript);
+
+    expect(successMock).toHaveBeenCalledTimes(2)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.ts', 'the src directory');
+    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'index.ts', 'the root of the project');
   })
 
   it('create an index file with all options for typescript environment', () => {
@@ -215,19 +257,16 @@ app.listen(PORT, () => {
 
     jest.mocked(fs.existsSync).mockReturnValue(false);
 
-    fileHelper.createIndex('index', userConfiguration)
+    fileHelper.createIndex(userConfiguration)
 
-    const contentExpected = formatContent(`import 'dotenv/config';
-import express from 'express';
+    const serverContentExpected = formatContent(`import express from 'express';
 import cors from 'cors'
 
 import { 
   mainRouter
-} from './src/routers/main.router';
+} from './routers/main.router';
 
 const app = express();
-
-const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs'); 
 app.set('views', 'views');
@@ -239,14 +278,15 @@ app.use(express.json());
 
 app.use(mainRouter);
 
-app.listen(PORT, () => {
-  console.log('The server is running on : http://localhost:'+ PORT);
-});\n`);
+export { app };\n`);
 
-    expect(writingMock).toHaveBeenCalledTimes(1)
-    expect(writingMock).toHaveBeenCalledWith('./server.ts', contentExpected);
-    expect(successMock).toHaveBeenCalledTimes(1)
-    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.ts', 'the root of the project');
+    expect(writingMock).toHaveBeenCalledTimes(2)
+    expect(writingMock).toHaveBeenCalledWith('./src/server.ts', serverContentExpected);
+    expect(writingMock).toHaveBeenCalledWith('./index.ts', indexContentExpectedInTypescript);
+
+    expect(successMock).toHaveBeenCalledTimes(2)
+    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'server.ts', 'the src directory');
+    expect(successMock).toHaveBeenCalledWith(filesEnum.index, 'index.ts', 'the root of the project');
   })
 
 });
