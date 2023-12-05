@@ -14,6 +14,29 @@ import { folderEnum } from '../enum/FolderEnum';
 import { displayHelper } from '../helpers/displayHelper';
 import { fileHelper } from '../helpers/fileHelper';
 
+function dependenciesBuilder( packageManager: string, dependencies: string[], isDev: boolean = false ) {
+  const managers = [
+    {
+      packageManager: 'yarn',
+      instruction: 'yarn add',
+      devOption: '--dev',
+    },
+    {
+      packageManager: 'npm',
+      instruction: 'npm install',
+      devOption: '--save-dev',
+    },
+  ];
+
+  const managerEntity = managers.find(manager => manager.packageManager === packageManager);
+
+  const instruction = isDev
+                      ? [ managerEntity?.instruction, managerEntity?.devOption, ...dependencies ]
+                      : [ managerEntity?.instruction, ...dependencies ]
+
+  return `${instruction.join(' ')}`;
+}
+
 /**
  * Function executed with the command `express-maker init`.
  *
@@ -24,11 +47,11 @@ import { fileHelper } from '../helpers/fileHelper';
  * - `./src_old/routers/main.router.js`
  * - `./server.js`
  */
-export async function initCommand() : Promise<void> {
+export async function initCommand(): Promise<void> {
   const userConfig: UserAnswers = await questionGenerator.initConfig();
 
-  const dependencies: string[] = ['express', 'dotenv']
-  const devDependencies: string[] = ['nodemon']
+  const dependencies: string[] = [ 'express', 'dotenv' ];
+  const devDependencies: string[] = [ 'nodemon' ];
 
   if ( userConfig.useTypescript ) {
     devDependencies.push('@types/node', '@types/express', 'ts-node', 'typescript');
@@ -62,8 +85,8 @@ export async function initCommand() : Promise<void> {
   fileHelper.createRouter('main.router', userConfig);
   fileHelper.createController('mainController', userConfig);
 
-  const dependenciesInstruction = `npm install ${dependencies.join(' ')}`;
-  const devDependenciesInstruction = `npm install --save-dev ${devDependencies.join(' ')}`;
+  const dependenciesInstruction = dependenciesBuilder(userConfig.packageManager, dependencies);
+  const devDependenciesInstruction = dependenciesBuilder(userConfig.packageManager, devDependencies, true);
 
   displayHelper.advice(`\nDon't forget to install your main dependencies with this command`, dependenciesInstruction);
   displayHelper.advice(`Don't forget to install your dev dependencies with this command`, devDependenciesInstruction);

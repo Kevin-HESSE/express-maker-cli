@@ -15,6 +15,7 @@ const userConfiguration: UserConfiguration = {
   isApiRest: false,
   useTypescript: false,
   defaultPort: 3000,
+  packageManager: 'npm',
 };
 
 const indexContent = `

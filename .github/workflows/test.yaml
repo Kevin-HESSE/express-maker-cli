@@ -5,9 +5,9 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        node: [14, 16, 18, 20]
+        node: [16, 18, 20]
     runs-on: ubuntu-latest
-    name: Node ${{ matrix.node }} test environment
+    name: Testing on Node version ${{ matrix.node }}
     steps:
       - name: Get code
         uses: actions/checkout@v4

@@ -7,7 +7,8 @@ export type UserConfiguration = {
   hasViewEngine: boolean,
   isApiRest: boolean,
   useTypescript: boolean,
-  defaultPort: number
+  defaultPort: number,
+  packageManager: string,
 }
 
 /**
