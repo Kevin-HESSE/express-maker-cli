@@ -1,18 +1,13 @@
 //Import modules
-// import config from '../modules/configGenerate';
+import { questionGenerator } from '../modules/configGenerate';
 
 //Import Helpers
-// import fileHelper from '../helpers/fileHelper';
-// import directoryHelper from '../helpers/directoryHelper';
-// import displayHelper from '../helpers/displayHelper';
-// import directoryEnum from '../enum/directoryEnum';
-
-import { questionGenerator } from '../modules/configGenerate';
-import { UserAnswers } from '../interface/UserConfiguration';
 import { directoryHelper } from '../helpers/directoryHelper';
 import { folderEnum } from '../enum/FolderEnum';
 import { displayHelper } from '../helpers/displayHelper';
 import { fileHelper } from '../helpers/fileHelper';
+
+import { UserAnswers } from '../interface/UserConfiguration';
 
 function dependenciesBuilder( packageManager: string, dependencies: string[], isDev: boolean = false ) {
   const managers = [
