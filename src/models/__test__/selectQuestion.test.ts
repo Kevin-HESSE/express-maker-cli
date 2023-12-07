@@ -1,6 +1,7 @@
 import { SelectQuestion } from '../SelectQuestion';
-import { displayHelper } from '../../helpers/displayHelper';
-import { SelectChoices } from '../../interface/SelectChoices';
+
+import { displayHelper } from '@/helpers/displayHelper';
+import { SelectChoices } from '@/interfaces/SelectChoices';
 
 const choices: SelectChoices[] = [
   {

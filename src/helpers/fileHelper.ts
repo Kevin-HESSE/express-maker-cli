@@ -2,12 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 
+import { folderEnum } from '@/enum/FolderEnum';
+import { filesEnum } from '@/enum/FileEnum';
+
+import { UserConfiguration } from '@/interfaces/UserConfiguration';
+
 import { pathHelpers } from './pathHelper';
 import { displayHelper } from './displayHelper';
-import { folderEnum } from '../enum/FolderEnum';
 import { formatContent } from './beautifyHelper';
-import { filesEnum } from '../enum/FileEnum';
-import { UserConfiguration } from '../interface/UserConfiguration';
 
 /**
  * Generate and compile the content of a file with some variables.

@@ -1,4 +1,5 @@
 import fs from 'fs';
+
 import { pathHelpers } from '../pathHelper';
 
 jest.mock('fs');

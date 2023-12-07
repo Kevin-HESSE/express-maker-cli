@@ -1,5 +1,6 @@
 import { ToggleQuestion } from '../ToggleQuestion';
-import { displayHelper } from '../../helpers/displayHelper';
+
+import { displayHelper } from '@/helpers/displayHelper';
 
 describe('test the implementation of the ToggleQuestion class', () => {
   it('create an instance with the correct property', () => {

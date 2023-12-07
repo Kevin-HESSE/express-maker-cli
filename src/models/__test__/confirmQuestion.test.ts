@@ -1,5 +1,6 @@
 import { ConfirmQuestion } from '../ConfirmQuestion';
-import { displayHelper } from '../../helpers/displayHelper';
+
+import { displayHelper } from '@/helpers/displayHelper';
 
 describe('test the implementation of the ConfirmQuestion class', () => {
   it('create an instance with the correct property', () => {

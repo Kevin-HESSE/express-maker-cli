@@ -1,5 +1,6 @@
 import { NumberQuestion } from '../NumberQuestion';
-import { displayHelper } from '../../helpers/displayHelper';
+
+import { displayHelper } from '@/helpers/displayHelper';
 
 describe('test the implementation of the NumberQuestion class', () => {
   it('create an instance with the correct property', () => {

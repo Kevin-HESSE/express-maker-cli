@@ -1,5 +1,6 @@
-import { displayHelper } from '../helpers/displayHelper';
 import { PromptObject, PromptType } from 'prompts';
+
+import { displayHelper } from '@/helpers/displayHelper';
 
 /**
  * Class related to a question for prompts, only used to be extended.

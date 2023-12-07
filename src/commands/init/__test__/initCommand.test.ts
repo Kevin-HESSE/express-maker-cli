@@ -1,13 +1,14 @@
-import { questionGenerator } from '../../modules/configGenerate';
-import { initCommand } from '../initCommand';
-import { directoryHelper } from '../../helpers/directoryHelper';
-import { fileHelper } from '../../helpers/fileHelper';
-import { displayHelper } from '../../helpers/displayHelper';
-import { UserAnswers } from '../../interface/UserConfiguration';
+import { directoryHelper } from '@/helpers/directoryHelper';
+import { fileHelper } from '@/helpers/fileHelper';
+import { displayHelper } from '@/helpers/displayHelper';
+import { UserAnswers } from '@/interfaces/UserConfiguration';
 
-jest.mock('../../helpers/directoryHelper');
-jest.mock('../../helpers/fileHelper');
-jest.mock('../../helpers/displayHelper');
+import { initCommand } from '../index';
+import { builder } from '../builder';
+
+jest.mock('@/helpers/directoryHelper');
+jest.mock('@/helpers/fileHelper');
+jest.mock('@/helpers/displayHelper');
 
 const createSpy = jest.spyOn(directoryHelper, 'create');
 const copyFileSpy = jest.spyOn(fileHelper, 'copyFile');
@@ -36,7 +37,7 @@ describe('Test the initCommand function', () => {
   });
 
   it('create an express application with no option', async () => {
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 
@@ -58,7 +59,7 @@ describe('Test the initCommand function', () => {
   it('create an express application with the option isApiRest checked in javascript environment', async () => {
     userConfig.isApiRest = true;
 
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 
@@ -75,7 +76,7 @@ describe('Test the initCommand function', () => {
     userConfig.isApiRest = true;
     userConfig.useTypescript = true;
 
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 
@@ -92,7 +93,7 @@ describe('Test the initCommand function', () => {
   it('create an express application with the option hasViewEngine checked in javascript environment', async () => {
     userConfig.hasViewEngine = true;
 
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 
@@ -111,7 +112,7 @@ describe('Test the initCommand function', () => {
     userConfig.hasViewEngine = true;
     userConfig.useTypescript = true;
 
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 
@@ -129,7 +130,7 @@ describe('Test the initCommand function', () => {
     userConfig.isApiRest = true;
     userConfig.hasViewEngine = true;
 
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 
@@ -149,7 +150,7 @@ describe('Test the initCommand function', () => {
     userConfig.hasViewEngine = true;
     userConfig.useTypescript = true;
 
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 
@@ -168,7 +169,7 @@ describe('Test the initCommand function', () => {
   it('propose the yarn package manager', async () => {
     userConfig.packageManager = 'yarn';
 
-    jest.spyOn(questionGenerator, 'initConfig').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
 
     await initCommand();
 

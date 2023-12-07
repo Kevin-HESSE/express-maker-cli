@@ -1,11 +1,12 @@
 import fs from 'fs';
+import path from 'path';
 
-import { UserConfiguration } from '../../interface/UserConfiguration';
-import { filesEnum } from '../../enum/FileEnum';
+import { UserConfiguration } from '@/interfaces/UserConfiguration';
+import { filesEnum } from '@/enum/FileEnum';
+
 import { fileHelper } from '../fileHelper';
 import { displayHelper } from '../displayHelper';
 import { formatContent } from '../beautifyHelper';
-import path from 'path';
 
 jest.mock('fs');
 jest.mock('console');

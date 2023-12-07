@@ -1,5 +1,6 @@
 import { Question } from './Question';
-import { SelectChoices } from '../interface/SelectChoices';
+
+import { SelectChoices } from '@/interfaces/SelectChoices';
 
 export class SelectQuestion extends Question {
   public choices: SelectChoices[];
