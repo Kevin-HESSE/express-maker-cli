@@ -1,10 +1,11 @@
+import { initCommand } from '../index';
+import { builder } from '../builder';
+import { InitOptions } from '../interface';
+
 import { directoryHelper } from '@/helpers/directoryHelper';
 import { fileHelper } from '@/helpers/fileHelper';
 import { displayHelper } from '@/helpers/displayHelper';
 import { UserAnswers } from '@/interfaces/UserConfiguration';
-
-import { initCommand } from '../index';
-import { builder } from '../builder';
 
 jest.mock('@/helpers/directoryHelper');
 jest.mock('@/helpers/fileHelper');
@@ -25,7 +26,9 @@ const userConfig: UserAnswers = {
   packageManager: 'npm',
 }
 
-describe('Test the initCommand function', () => {
+describe('Test the initCommand function with no option', () => {
+  const options: InitOptions = {};
+
   afterEach(() => {
     userConfig.isApiRest = false;
     userConfig.hasViewEngine = false;
@@ -37,9 +40,9 @@ describe('Test the initCommand function', () => {
   });
 
   it('create an express application with no option', async () => {
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(createSpy).toHaveBeenCalledTimes(5);
     expect(copyFileSpy).toHaveBeenCalledTimes(3);
@@ -59,9 +62,9 @@ describe('Test the initCommand function', () => {
   it('create an express application with the option isApiRest checked in javascript environment', async () => {
     userConfig.isApiRest = true;
 
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(adviceSpy).toHaveBeenCalledTimes(2);
     expect(adviceSpy).toHaveBeenCalledWith(`\nDon't forget to install your main dependencies with this command`,
@@ -76,9 +79,9 @@ describe('Test the initCommand function', () => {
     userConfig.isApiRest = true;
     userConfig.useTypescript = true;
 
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(adviceSpy).toHaveBeenCalledTimes(2);
     expect(adviceSpy).toHaveBeenCalledWith(`\nDon't forget to install your main dependencies with this command`,
@@ -93,9 +96,9 @@ describe('Test the initCommand function', () => {
   it('create an express application with the option hasViewEngine checked in javascript environment', async () => {
     userConfig.hasViewEngine = true;
 
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(createSpy).toHaveBeenCalledTimes(8);
 
@@ -112,9 +115,9 @@ describe('Test the initCommand function', () => {
     userConfig.hasViewEngine = true;
     userConfig.useTypescript = true;
 
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(adviceSpy).toHaveBeenCalledTimes(2);
     expect(adviceSpy).toHaveBeenCalledWith(`\nDon't forget to install your main dependencies with this command`,
@@ -130,9 +133,9 @@ describe('Test the initCommand function', () => {
     userConfig.isApiRest = true;
     userConfig.hasViewEngine = true;
 
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(createSpy).toHaveBeenCalledTimes(8);
 
@@ -150,9 +153,9 @@ describe('Test the initCommand function', () => {
     userConfig.hasViewEngine = true;
     userConfig.useTypescript = true;
 
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(createSpy).toHaveBeenCalledTimes(8);
 
@@ -169,9 +172,9 @@ describe('Test the initCommand function', () => {
   it('propose the yarn package manager', async () => {
     userConfig.packageManager = 'yarn';
 
-    jest.spyOn(builder, 'getUserConfiguration').mockResolvedValue(userConfig);
+    jest.spyOn(builder, 'getQuestion').mockResolvedValue(userConfig);
 
-    await initCommand();
+    await initCommand(options);
 
     expect(adviceSpy).toHaveBeenCalledTimes(2);
     expect(adviceSpy).toHaveBeenCalledWith(`\nDon't forget to install your main dependencies with this command`,
@@ -183,3 +186,50 @@ describe('Test the initCommand function', () => {
     );
   })
 });
+
+describe('Test the init command with the template option', () => {
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('create an express application with api-js template', async () => {
+    const options: InitOptions = {
+      template: 'api-js'
+    };
+
+    await initCommand(options);
+
+    expect(adviceSpy).toHaveBeenCalledTimes(2);
+    expect(adviceSpy).toHaveBeenCalledWith(`\nDon't forget to install your main dependencies with this command`,
+      'npm install express dotenv cors',
+    );
+    expect(adviceSpy).toHaveBeenCalledWith(`Don't forget to install your dev dependencies with this command`,
+      'npm install --save-dev nodemon',
+    );
+  });
+
+  it('create an express application with api-ts template', async () => {
+    const options: InitOptions = {
+      template: 'api-ts'
+    };
+
+    await initCommand(options);
+
+    expect(adviceSpy).toHaveBeenCalledTimes(2);
+    expect(adviceSpy).toHaveBeenCalledWith(`\nDon't forget to install your main dependencies with this command`,
+      'npm install express dotenv cors',
+    );
+    expect(adviceSpy).toHaveBeenCalledWith(`Don't forget to install your dev dependencies with this command`,
+      'npm install --save-dev nodemon @types/node @types/express ts-node typescript @types/cors',
+    );
+  });
+
+  it('throw an error when a wrong template is called', () => {
+    const options: InitOptions= {
+      template: 'api'
+    }
+
+    return expect(async () => await initCommand(options)).rejects.toThrow('This template does not exist. Check the documentation for all available template.')
+  });
+})

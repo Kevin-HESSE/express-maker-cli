@@ -1,5 +1,6 @@
 //Import modules
 import { builder } from './builder';
+import { InitOptions } from './interface';
 
 //Import Helpers
 import { directoryHelper } from '@/helpers/directoryHelper';
@@ -19,8 +20,11 @@ import { UserAnswers } from '@/interfaces/UserConfiguration';
  * - `./src_old/routers/main.router.js`
  * - `./server.js`
  */
-export async function initCommand(): Promise<void> {
-  const userConfig: UserAnswers = await builder.getUserConfiguration();
+export async function initCommand( options: InitOptions ): Promise<void> {
+
+  const userConfig: UserAnswers = options.template
+                                  ? builder.getTemplate(options)
+                                  : await builder.getQuestion();
 
   if ( userConfig.hasViewEngine ) {
     directoryHelper.create('./views');

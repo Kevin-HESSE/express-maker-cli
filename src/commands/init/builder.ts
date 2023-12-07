@@ -1,3 +1,6 @@
+import { templates } from './template';
+import { InitOptions } from './interface';
+
 import { UserAnswers, UserConfiguration } from '@/interfaces/UserConfiguration';
 import { SelectChoices } from '@/interfaces/SelectChoices';
 
@@ -25,7 +28,6 @@ function dependenciesBuilder( userConfig: UserConfiguration ): Dependencies {
   const dependencies: string[] = [ 'express', 'dotenv' ];
   const devDependencies: string[] = [ 'nodemon' ];
 
-  // Building the dependencies list
   if ( userConfig.hasViewEngine ) {
     dependencies.push('ejs');
   }
@@ -34,7 +36,6 @@ function dependenciesBuilder( userConfig: UserConfiguration ): Dependencies {
     dependencies.push('cors');
   }
 
-  // Building the dev dependencies list
   if ( userConfig.useTypescript ) {
     devDependencies.push('@types/node', '@types/express', 'ts-node', 'typescript');
   }
@@ -80,7 +81,16 @@ export const builder = {
       dev: devInstruction.join(' '),
     };
   },
-  getUserConfiguration: async function (): Promise<UserAnswers> {
+  getTemplate: function(options: InitOptions): UserAnswers {
+    const template = templates.find(template => options.template === template.name);
+
+    if(!template) {
+      throw new Error('This template does not exist. Check the documentation for all available template.');
+    }
+
+    return template.userConfiguration
+  },
+  getQuestion: async function (): Promise<UserAnswers> {
     const choices: SelectChoices[] = [
       {
         title: 'npm',
