@@ -88,7 +88,7 @@ export const builder = {
       throw new Error('This template does not exist. Check the documentation for all available template.');
     }
 
-    return template.userConfiguration
+    return template.userConfiguration;
   },
   getQuestion: async function (): Promise<UserAnswers> {
     const choices: SelectChoices[] = [

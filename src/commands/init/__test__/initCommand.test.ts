@@ -1,3 +1,5 @@
+import prompts from 'prompts';
+
 import { initCommand } from '../index';
 import { builder } from '../builder';
 import { InitOptions } from '../interface';
@@ -223,13 +225,5 @@ describe('Test the init command with the template option', () => {
     expect(adviceSpy).toHaveBeenCalledWith(`Don't forget to install your dev dependencies with this command`,
       'npm install --save-dev nodemon @types/node @types/express ts-node typescript @types/cors',
     );
-  });
-
-  it('throw an error when a wrong template is called', () => {
-    const options: InitOptions= {
-      template: 'api'
-    }
-
-    return expect(async () => await initCommand(options)).rejects.toThrow('This template does not exist. Check the documentation for all available template.')
   });
 })

@@ -8,8 +8,6 @@ import { folderEnum } from '@/enum/FolderEnum';
 import { displayHelper } from '@/helpers/displayHelper';
 import { fileHelper } from '@/helpers/fileHelper';
 
-import { UserAnswers } from '@/interfaces/UserConfiguration';
-
 /**
  * Function executed with the command `express-maker init`.
  *
@@ -21,12 +19,23 @@ import { UserAnswers } from '@/interfaces/UserConfiguration';
  * - `./server.js`
  */
 export async function initCommand( options: InitOptions ): Promise<void> {
+  let userConfig;
 
-  const userConfig: UserAnswers = options.template
-                                  ? builder.getTemplate(options)
-                                  : await builder.getQuestion();
+  if(options.template) {
+    try {
+      userConfig = builder.getTemplate(options);
+    } catch ( e ) {
+      if ( e instanceof Error ) {
+        displayHelper.errorMessage(e.message)
+      } else {
+        console.error('Unknown error occurs on the init command with template option!');
+      }
+    }
+  } else {
+    userConfig = await builder.getQuestion();
+  }
 
-  if ( userConfig.hasViewEngine ) {
+  if ( userConfig!.hasViewEngine ) {
     directoryHelper.create('./views');
     directoryHelper.create('./public');
     directoryHelper.create('./public/css');
@@ -41,12 +50,20 @@ export async function initCommand( options: InitOptions ): Promise<void> {
   fileHelper.copyFile('env', 'env');
   fileHelper.copyFile('env', 'env.example');
   fileHelper.copyFile('gitignore', 'gitignore');
-  fileHelper.createIndex(userConfig);
-  fileHelper.createRouter('main.router', userConfig);
-  fileHelper.createController('mainController', userConfig);
+  fileHelper.createIndex(userConfig!);
+  fileHelper.createRouter('main.router', userConfig!);
+  fileHelper.createController('mainController', userConfig!);
 
-  const instructions = builder.getInstructions(userConfig);
+  try {
+    const instructions = builder.getInstructions(userConfig!);
 
-  displayHelper.advice(`\nDon't forget to install your main dependencies with this command`, instructions.mandatory);
-  displayHelper.advice(`Don't forget to install your dev dependencies with this command`, instructions.dev);
+    displayHelper.advice(`\nDon't forget to install your main dependencies with this command`, instructions.mandatory);
+    displayHelper.advice(`Don't forget to install your dev dependencies with this command`, instructions.dev);
+  } catch ( e ) {
+    if(e instanceof Error) {
+      displayHelper.errorMessage('e.message')
+    } else {
+      console.error('Unknown error occurs on the init command with instructions!');
+    }
+  }
 }
