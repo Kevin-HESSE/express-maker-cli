@@ -44,6 +44,14 @@ function dependenciesBuilder( userConfig: UserConfiguration ): Dependencies {
     devDependencies.push('@types/cors');
   }
 
+  if(userConfig.useTest) {
+    devDependencies.push('jest', 'supertest');
+  }
+
+  if(userConfig.useTypescript && userConfig.useTest) {
+    devDependencies.push('@types/jest', '@types/supertest', 'ts-jest')
+  }
+
   return {
     mandatory: dependencies,
     dev: devDependencies,
@@ -85,7 +93,7 @@ export const builder = {
     const template = templates.find(template => options.template === template.name);
 
     if(!template) {
-      throw new Error('This template does not exist. Check the documentation for all available template.');
+      throw new Error('This template does not exist. Check the documentation for a list of all available template.');
     }
 
     return template.userConfiguration;
@@ -108,6 +116,7 @@ export const builder = {
       new ToggleQuestion('isApiRest', 'Do you intend to use your server as an ApiREST ?', false),
       new NumberQuestion('defaultPort', 'What port do you want to use ? (default value 3000)', 3000),
       new SelectQuestion('packageManager', 'Which package manager do you want to use?', choices),
+      new ToggleQuestion('useTest', 'Do you intend to use a test library?', false),
     ];
 
     return await configPrompt(askCustomConfig);

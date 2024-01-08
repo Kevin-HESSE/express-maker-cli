@@ -17,6 +17,7 @@ describe('Test the getTemplate method', () => {
     expect(template).toHaveProperty('defaultPort', 3000)
     expect(template).toHaveProperty('useTypescript', false)
     expect(template).toHaveProperty('packageManager', 'npm')
+    expect(template).toHaveProperty('useTest', true)
   })
   it('throw an error when the template is not found', () => {
     const options: InitOptions = {
@@ -29,7 +30,7 @@ describe('Test the getTemplate method', () => {
 
 describe('Test the getQuestion method', () => {
   it('return the response', async () => {
-    prompts.inject([false, false, false, 3000, 'npm'])
+    prompts.inject([false, false, false, 3000, 'npm', false])
 
     const answers = await builder.getQuestion();
 
@@ -39,6 +40,7 @@ describe('Test the getQuestion method', () => {
       useTypescript: false,
       defaultPort: 3000,
       packageManager: 'npm',
+      useTest: false
     })
   })
 })

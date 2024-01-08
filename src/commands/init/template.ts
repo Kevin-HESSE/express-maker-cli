@@ -8,7 +8,8 @@ export const templates: Template[] = [
       isApiRest: true,
       defaultPort: 3000,
       useTypescript: false,
-      packageManager: 'npm'
+      packageManager: 'npm',
+      useTest: true
     }
   },
   {
@@ -18,7 +19,8 @@ export const templates: Template[] = [
       isApiRest: true,
       defaultPort: 3000,
       useTypescript: true,
-      packageManager: 'npm'
+      packageManager: 'npm',
+      useTest: true
     }
   },
 ]

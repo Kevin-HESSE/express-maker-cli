@@ -21,12 +21,12 @@ import { fileHelper } from '@/helpers/fileHelper';
 export async function initCommand( options: InitOptions ): Promise<void> {
   let userConfig;
 
-  if(options.template) {
+  if ( options.template ) {
     try {
       userConfig = builder.getTemplate(options);
     } catch ( e ) {
       if ( e instanceof Error ) {
-        displayHelper.errorMessage(e.message)
+        displayHelper.errorMessage(e.message);
       } else {
         console.error('Unknown error occurs on the init command with template option!');
       }
@@ -47,6 +47,10 @@ export async function initCommand( options: InitOptions ): Promise<void> {
   directoryHelper.create(`./${folderEnum.main}/${folderEnum.controller}`);
   directoryHelper.create(`./${folderEnum.main}/${folderEnum.middleware}`);
 
+  if ( userConfig!.useTest ) {
+    directoryHelper.create(`./${folderEnum.main}/${folderEnum.controller}/__test__`);
+  }
+
   fileHelper.copyFile('env', 'env');
   fileHelper.copyFile('env', 'env.example');
   fileHelper.copyFile('gitignore', 'gitignore');
@@ -54,16 +58,28 @@ export async function initCommand( options: InitOptions ): Promise<void> {
   fileHelper.createRouter('main.router', userConfig!);
   fileHelper.createController('mainController', userConfig!);
 
+  if(userConfig!.useTest) {
+    fileHelper.createTest('mainController.test', userConfig!);
+  }
+
   try {
     const instructions = builder.getInstructions(userConfig!);
 
     displayHelper.advice(`\nDon't forget to install your main dependencies with this command`, instructions.mandatory);
     displayHelper.advice(`Don't forget to install your dev dependencies with this command`, instructions.dev);
   } catch ( e ) {
-    if(e instanceof Error) {
-      displayHelper.errorMessage('e.message')
+    if ( e instanceof Error ) {
+      displayHelper.errorMessage(e.message);
     } else {
       console.error('Unknown error occurs on the init command with instructions!');
     }
+  }
+
+  if(userConfig!.useTypescript) {
+    displayHelper.advice('You can initialize the typescript config file with this command', 'npx tsc --init')
+  }
+
+  if(userConfig!.useTypescript && userConfig!.useTest) {
+    displayHelper.advice(`Don't forget to configure ts-jest for testing your app with jest and typescript. You can find more information here`, 'https://jestjs.io/docs/getting-started#using-typescript')
   }
 }

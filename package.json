@@ -16,7 +16,8 @@
     "prompts": "^2.4.2"
   },
   "scripts": {
-    "build": "rm -rf ./build/* && tsc --project tsconfig.json && tsc-alias -p tsconfig.json && cp -r ./src/templates ./build/templates",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && cp -r ./src/templates ./build/templates",
+    "preview": "rm -rf ./build/* && npm run build && npm link",
     "dev": "ts-node ./src/app.ts init",
     "test": "jest --maxWorkers=1"
   },

@@ -1,6 +1,23 @@
 # Changelog
 
-## Version 0.9.0
+## Version 1.1.0
+
+### New Features
+
+- New options are available during the creation process :
+  - Add the test option. Give the possibility to create a test directory inside the project. 
+  - Add the package manager option. For the moment, only npm and yarn are available.
+- New CLI option available : -t for template. This allows to skip the question process and create an Express app with some configured template. Two are currently available :
+  - api-js : Use npm as package manager with api rest and test options enable. The port by default is 3000
+  - api-ts : Same as above except with the typescript option enable
+
+### Modification
+
+- Create multiples tests suites
+- Create a dockerfile for testing the functionality of the CLI
+- Splitting the init command file into smaller files
+
+## Version 1.0.0
 
 Beta version of the project released on npm.
 

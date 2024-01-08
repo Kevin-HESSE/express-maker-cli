@@ -9,6 +9,7 @@ export type UserConfiguration = {
   useTypescript: boolean,
   defaultPort: number,
   packageManager: string,
+  useTest: boolean
 }
 
 /**

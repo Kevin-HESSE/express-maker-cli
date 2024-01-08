@@ -25,8 +25,36 @@ You need to answer several questions :
 - Do you need a view engine ? 
 - Do you use the application as an APIRest ?
 - Which default port do you want to use ?
+- Which package manager do you want to use?
+- Do you intend to use a test library?
 
 After that, all files and folders will be created based on your answers. It will prompt you the list of dependencies to install with the npm command.
 
 :warning: No dependencies will be installed ! :warning:. You have to do it manually.
+
+You can use the -t, for template, option with an argument to skip all questions. There is only two templates available, api-js and api-ts.
+
+```bash 
+npx @khesse-project/express-maker-cli init -t api-js
+```
+
+- **api-js** is equal to :
+  - Do you want to use Typescript ? ```False```
+  - Do you need a view engine ? ```False```
+  - Do you use the application as an APIRest ? ```True```
+  - Which default port do you want to use ? ```3000```
+  - Which package manager do you want to use? ```npm```
+  - Do you intend to use a test library? ```True```
+
+```bash 
+npx @khesse-project/express-maker-cli init -t api-ts
+```
+
+- **api-ts** is equal to :
+  - Do you want to use Typescript ? ```True```
+  - Do you need a view engine ? ```False```
+  - Do you use the application as an APIRest ? ```True```
+  - Which default port do you want to use ? ```3000```
+  - Which package manager do you want to use? ```npm```
+  - Do you intend to use a test library? ```True```
 

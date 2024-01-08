@@ -117,6 +117,15 @@ export const fileHelper = {
     },
 
     /**
+     * Create a test file inside the contr
+     * @param {string} fileName
+     * @param {UserConfiguration} userConfig
+     */
+    createTest: function ( fileName: string, userConfig: UserConfiguration ) {
+        createFile('test', 'test/test.template', fileName, userConfig)
+    },
+
+    /**
      * Copy a template file in the root of the project.
      * @param {string} templateFile Represent the template name to copy
      * @param {string} targetFileName Represent the name of the copied file.

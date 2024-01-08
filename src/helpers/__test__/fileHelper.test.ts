@@ -17,6 +17,7 @@ const userConfiguration: UserConfiguration = {
   useTypescript: false,
   defaultPort: 3000,
   packageManager: 'npm',
+  useTest: false
 };
 
 const serverContent = `
