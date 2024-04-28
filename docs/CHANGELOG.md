@@ -13,9 +13,11 @@
 
 ### Modification
 
+The following modification are here to improve the future development of the application.
 - Create multiples tests suites
 - Create a dockerfile for testing the functionality of the CLI
 - Splitting the init command file into smaller files
+- Adding @ aliases to file path
 
 ## Version 1.0.0
 
