@@ -1,6 +1,6 @@
 {
   "name": "@khesse-project/express-maker-cli",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "main": "./build/app.js",
   "files": [
     "build/**/*"
@@ -16,21 +16,34 @@
     "prompts": "^2.4.2"
   },
   "scripts": {
-    "build": "rm -rf ./build/* && tsc && cp -r ./src/templates ./build/templates",
-    "dev": "ts-node ./src/app.ts init"
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && cp -r ./src/templates ./build/templates",
+    "preview": "rm -rf ./build/* && npm run build && npm link",
+    "dev": "ts-node ./src/app.ts init",
+    "test": "jest --maxWorkers=1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Kevin HESSE",
   "license": "MIT",
   "bin": {
     "express-maker-cli": "build/app.js"
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
+  },
   "description": "",
   "devDependencies": {
+    "@types/jest": "^29.5.10",
     "@types/js-beautify": "^1.14.3",
     "@types/lodash": "^4.14.202",
     "@types/prompts": "^2.4.9",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.8",
     "typescript": "^5.3.2"
   }
 }

@@ -4,11 +4,11 @@ This package is a tool to generate an Express.js server with in few steps. I'm i
 - [sequelize-cli](https://www.npmjs.com/package/sequelize-cli), more information here 
 - `symfony/maker-bundle`, a symfony package which generate some file.
 
-This project is born of my need to generate a bunch of Express.js application during my formation.
+This project is born of my need to generate a bunch of Express.js application during my training course. 
 
 ## FeedBack
 
-Don't hesistate to give feedback [here](https://github.com/Kevin-HESSE/express-maker-cli/issues). 
+Don't hesitate to give feedback [here](https://github.com/Kevin-HESSE/express-maker-cli/issues). 
 
 Try to explain how the problem occurs. It can be helpful to resolve.
 
@@ -25,8 +25,52 @@ You need to answer several questions :
 - Do you need a view engine ? 
 - Do you use the application as an APIRest ?
 - Which default port do you want to use ?
+- Which package manager do you want to use?
+- Do you intend to use a test library?
 
-After that, all files and folders will be created based on your answers. It will prompt you the list of dependencies to install with the npm command.
+After that, all files and folders will be created based on your answers. 
+
+### Dependencies
 
 :warning: No dependencies will be installed ! :warning:. You have to do it manually.
+
+The list of dependencies to install is shown after the CLI execution with the selected package manager.
+
+If typescript and test options are selected, the program prompt you a link how configure jest with typescript.
+
+### Templates options
+
+You can use the -t, for template, option with an argument to skip all questions. There is only two templates available, api-js and api-ts.
+
+```bash 
+npx @khesse-project/express-maker-cli init -t api-js
+```
+
+- **api-js** is equal to :
+
+| Question                                   | Answer      |
+|--------------------------------------------|-------------|
+| Do you want to use Typescript ?            | ```False``` |
+| Do you need a view engine ?                | ```False``` |
+| Do you use the application as an APIRest ? | ```True```  |
+| Which default port do you want to use ?    | ```3000```  |
+| Which package manager do you want to use?  | ```npm```   |
+| Do you intend to use a test library?       | ```True```  |
+
+
+```bash 
+npx @khesse-project/express-maker-cli init -t api-ts
+```
+
+- **api-ts** is equal to :
+
+| Question                                   | Answer      |
+|--------------------------------------------|-------------|
+| Do you want to use Typescript ?            | ```True```  |
+| Do you need a view engine ?                | ```False``` |
+| Do you use the application as an APIRest ? | ```True```  |
+| Which default port do you want to use ?    | ```3000```  |
+| Which package manager do you want to use?  | ```npm```   |
+| Do you intend to use a test library?       | ```True```  |
+
 

@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  node-js:
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: ./
+      target: test-js
+    container_name: express-js
+  node-ts:
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: ./
+      target: test-ts
+    container_name: express-ts
+

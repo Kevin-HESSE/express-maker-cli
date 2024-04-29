@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { folderEnum } from '../enum/FolderEnum';
+
+import { folderEnum } from '@/enum/FolderEnum';
 
 function getAppDirectory(): string{
   if(fs.existsSync(`./${folderEnum.main}`)) {

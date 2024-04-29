@@ -2,12 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 
+import { folderEnum } from '@/enum/FolderEnum';
+import { filesEnum } from '@/enum/FileEnum';
+
+import { UserConfiguration } from '@/interfaces/UserConfiguration';
+
 import { pathHelpers } from './pathHelper';
 import { displayHelper } from './displayHelper';
-import { folderEnum } from '../enum/FolderEnum';
 import { formatContent } from './beautifyHelper';
-import { filesEnum } from '../enum/FileEnum';
-import { UserConfiguration } from '../interface/UserConfiguration';
 
 /**
  * Generate and compile the content of a file with some variables.
@@ -72,21 +74,28 @@ function createFile(fileType: string, templateName: string, fileName: string, us
 export const fileHelper = {
     /**
      * Create an `index.js` file with basic setup
-     * @param {String} template The name of the template to copy
      * @param {UserConfiguration} userConfig Information needed to create the file
      */
-    createIndex: function (template: string, userConfig: UserConfiguration){
+    createIndex: function (userConfig: UserConfiguration){
         const extension = getFileExtension(userConfig.useTypescript);
 
-        if(fs.existsSync(`./server.${extension}`)){
+        if(fs.existsSync(`./${folderEnum.main}/server.${extension}`)){
             displayHelper.warning(filesEnum.index, `server.${extension}`);
             return;
+        } else {
+            const serverContent = generateContent('server', userConfig);
+            fs.writeFileSync(`./${folderEnum.main}/server.${extension}`, serverContent);
+            displayHelper.fileCreated(filesEnum.index, `server.${extension}`, 'the src directory');
         }
 
-        const content = generateContent(template, userConfig);
-
-        fs.writeFileSync(`./server.${extension}`, content);
-        displayHelper.fileCreated(filesEnum.index, `server.${extension}`, 'the root of the project');
+        if(fs.existsSync(`./index.${extension}`)){
+            displayHelper.warning(filesEnum.index, `index.${extension}`);
+            return;
+        } else {
+            const indexContent = generateContent('index', userConfig)
+            fs.writeFileSync(`./index.${extension}`, indexContent);
+            displayHelper.fileCreated(filesEnum.index, `index.${extension}`, 'the root of the project');
+        }
     },
 
     /**
@@ -105,6 +114,15 @@ export const fileHelper = {
      */
     createController: function(fileName: string, userConfig: UserConfiguration){
         createFile('controller', 'controllers/controller.template', fileName, userConfig);
+    },
+
+    /**
+     * Create a test file inside the contr
+     * @param {string} fileName
+     * @param {UserConfiguration} userConfig
+     */
+    createTest: function ( fileName: string, userConfig: UserConfiguration ) {
+        createFile('test', 'test/test.template', fileName, userConfig)
     },
 
     /**

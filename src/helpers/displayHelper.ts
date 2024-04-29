@@ -51,7 +51,7 @@ export const displayHelper = {
    * @param {String} message The message to display
    */
   errorMessage: function ( message: string ) {
-    console.log( kleur.red( message ) );
+    console.error( kleur.red( message ) );
     exit(1);
   },
 };
